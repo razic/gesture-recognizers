@@ -24,11 +24,11 @@ function GestureRecognizer(node) {
     }
 
     return touch;
-  }
+  };
 
   this.touchMove = function(self, event) {
     event.preventDefault();
-  }
+  };
 
   this.touchEnd = function(self, event) {
     var key;
@@ -47,7 +47,7 @@ function GestureRecognizer(node) {
     length = Object.keys(self.touches).length;
 
     if (self.state == 'started' && length < self.touchesRequired) {
-      self.state = 'ended'
+      self.state = 'ended';
     }
-  }
+  };
 }

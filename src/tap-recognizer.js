@@ -24,4 +24,4 @@ function TapRecognizer(node) {
   node.addEventListener('touchend', touchEnd, false);
 }
 
-TapRecognizer.prototype = new GestureRecognizer;
+TapRecognizer.prototype = new GestureRecognizer();

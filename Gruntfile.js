@@ -13,12 +13,17 @@ module.exports = function (grunt) {
     watch: {
       files: "src/*.js",
       tasks: "dev"
+    },
+    jshint: {
+      beforeconcat: "src/*.js",
+      afterconcat: 'dist/touch.js'
     }
   });
 
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-concat');
+  grunt.loadNpmTasks('grunt-contrib-jshint');
 
-  grunt.registerTask('dev', ['concat']);
+  grunt.registerTask('dev', ['jshint:beforeconcat', 'concat', 'jshint:afterconcat']);
   grunt.registerTask('default', ['concat']);
 }
