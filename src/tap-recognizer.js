@@ -5,10 +5,7 @@ function TapRecognizer(node) {
 
   function touchStart(event) {
     TapRecognizer.prototype.touchStart(self, event);
-
-    if (self.state == 'started' || self.state == 'ended') {
-      self.handler(self);
-    }
+    self.onStart(self);
   }
 
   function touchMove(event) {
@@ -17,6 +14,7 @@ function TapRecognizer(node) {
 
   function touchEnd(event) {
     TapRecognizer.prototype.touchEnd(self, event);
+    self.onEnd(self);
   }
 
   node.addEventListener('touchstart', touchStart, false);
