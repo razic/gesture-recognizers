@@ -1,8 +1,6 @@
 function GestureRecognizer(node) {
-  this.state = null;
   this.touches = {};
-  this.tapsRequired = 1;
-  this.touchesRequired = 1;
+  this.state = 'possible';
 
   this.touchStart = function(self, event) {
     var length;
@@ -14,14 +12,6 @@ function GestureRecognizer(node) {
     touch = event.targetTouches[length - 1];
 
     self.touches[touch.identifier] = touch;
-
-    if (length == self.touchesRequired) {
-      self.state = 'started';
-    } else if (self.state == 'started' && length != self.touchesRequired) {
-      self.state = 'ended';
-    } else if (self.state == 'ended') {
-      self.state = null;
-    }
 
     return touch;
   };
@@ -40,14 +30,6 @@ function GestureRecognizer(node) {
       delete self.touches[event.changedTouches[key].identifier];
     }
 
-    if (self.state == 'ended') {
-      self.state = null;
-    }
-
     length = Object.keys(self.touches).length;
-
-    if (self.state == 'started' && length < self.touchesRequired) {
-      self.state = 'ended';
-    }
   };
 }
