@@ -5,7 +5,8 @@ module.exports = function (grunt) {
       dist: {
         src: [
           "src/gesture-recognizer.js",
-          "src/tap-recognizer.js"
+          "src/tap-recognizer.js",
+          "src/pan-recognizer.js"
         ],
         dest: 'dist/touch.js'
       }
