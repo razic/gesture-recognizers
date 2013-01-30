@@ -5,7 +5,7 @@ describe('GestureRecognizer', function() {
     gestureRecognizer = new GestureRecognizer();
   });
 
-  it("should set some defaults", function() {
+  it('should set some defaults', function() {
     var state;
     var touches;
 
@@ -13,6 +13,5 @@ describe('GestureRecognizer', function() {
     touches = gestureRecognizer.touches;
 
     expect(state).toBe('possible');
-    expect(touches).toEqual({});
   });
 });

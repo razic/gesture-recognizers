@@ -1,5 +1,4 @@
 function PanRecognizer(node) {
-  var self;
   var minimumNumberOfTouches;
   var maximumNumberOfTouches;
   var minimumNumberOfPixelsTranslatedBeforeRecognized;
@@ -8,18 +7,13 @@ function PanRecognizer(node) {
   maximumNumberOfTouches = 10;
   minimumNumberOfPixelsTranslatedBeforeRecognized = 5;
 
-  self = this;
-
   function touchStart(event) {
-    var key;
-    var currentNumberOfTouches;
+    var targetTouchesLength;
 
-    TapRecognizer.prototype.touchStart(self, event);
+    targetTouchesLength = event.targetTouches.length;
 
-    currentNumberOfTouches = Object.keys(self.touches).length;
-
-    if (self.state == 'possible' && currentNumberOfTouches >= minimumNumberOfTouches && currentNumberOfTouches <= maximumNumberOfTouches) {
-      self.state = 'began';
+      if (this.state == 'possible' && targetTouchesLength >= minimumNumberOfTouches && targetTouchesLength <= maximumNumberOfTouches) {
+      this.state = 'began';
     }
   }
 
@@ -28,7 +22,7 @@ function PanRecognizer(node) {
   }
 
   function touchEnd(event) {
-    TapRecognizer.prototype.touchEnd(self, event);
+    event.preventDefault();
   }
 
   node.addEventListener('touchstart', touchStart, false);
