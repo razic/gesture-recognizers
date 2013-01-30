@@ -1,33 +1,21 @@
-function PanGestureRecognizer(node) {
-  var minimumNumberOfTouches;
-  var maximumNumberOfTouches;
-  var minimumNumberOfPixelsTranslatedBeforeRecognized;
+function PanGestureRecognizer(target) {
+  'use strict';
 
-  minumumNumberOfTouches = 1;
-  maximumNumberOfTouches = 10;
-  minimumNumberOfPixelsTranslatedBeforeRecognized = 5;
+  this.minumumNumberOfTouches = 1;
+  this.maximumNumberOfTouches = 10;
+  this.minimumNumberOfPixelsTranslatedBeforeRecognized = 5;
 
-  function touchStart(event) {
+  this.touchStart = function(event) {
     var targetTouchesLength;
 
     targetTouchesLength = event.targetTouches.length;
 
-      if (this.state == 'possible' && targetTouchesLength >= minimumNumberOfTouches && targetTouchesLength <= maximumNumberOfTouches) {
+    if (this.state == 'possible' && targetTouchesLength >= this.minimumNumberOfTouches && targetTouchesLength <= this.maximumNumberOfTouches) {
       this.state = 'began';
     }
-  }
+  };
 
-  function touchMove(event) {
-    event.preventDefault();
-  }
-
-  function touchEnd(event) {
-    event.preventDefault();
-  }
-
-  node.addEventListener('touchstart', touchStart, false);
-  node.addEventListener('touchmove', touchMove, false);
-  node.addEventListener('touchend', touchEnd, false);
+  target.addEventListener('touchstart', this.touchStart, false);
 }
 
 PanGestureRecognizer.prototype = new GestureRecognizer();

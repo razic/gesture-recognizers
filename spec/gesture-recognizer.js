@@ -1,17 +1,13 @@
-'use strict';
-
 describe('GestureRecognizer', function() {
-  var gestureRecognizer;
+  'use strict';
+
+  var recognizer;
 
   beforeEach(function() {
-    gestureRecognizer = new GestureRecognizer();
+    recognizer = new GestureRecognizer(document.body);
   });
 
   it('should be in the possible state upon initialization', function() {
-    var state;
-
-    state = gestureRecognizer.state;
-
-    expect(state).toBe('possible');
+    expect(recognizer.state).toBe('possible');
   });
 });
