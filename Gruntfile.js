@@ -1,30 +1,53 @@
+'use strict';
+
 module.exports = function (grunt) {
+  var build;
+  var specFiles;
+  var sourceFiles;
+  var specAndSourceFiles;
+
+  build = 'dist/touch.js';
+
+  specFiles = [
+    'spec/gesture-recognizer.js'
+  ];
+
+  sourceFiles = [
+    'src/gesture-recognizer.js',
+    'src/tap-recognizer.js',
+    'src/pan-recognizer.js'
+  ];
+
+  specAndSourceFiles = specFiles.concat(sourceFiles);
+
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
+    watch: {
+      files: specAndSourceFiles,
+      tasks: 'default'
+    },
     concat: {
       dist: {
-        src: [
-          "src/gesture-recognizer.js",
-          "src/tap-recognizer.js",
-          "src/pan-recognizer.js"
-        ],
-        dest: 'dist/touch.js'
+        src: sourceFiles,
+        dest: build
       }
     },
-    watch: {
-      files: "src/*.js",
-      tasks: "dev"
-    },
     jshint: {
-      beforeconcat: "src/*.js",
-      afterconcat: 'dist/touch.js'
+      beforeconcat: specAndSourceFiles,
+      afterconcat: build
+    },
+    jasmine: {
+      src: sourceFiles,
+      options: {
+        specs: specFiles
+      }
     }
   });
 
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-jasmine');
 
-  grunt.registerTask('dev', ['jshint:beforeconcat', 'concat', 'jshint:afterconcat']);
-  grunt.registerTask('default', ['concat']);
+  grunt.registerTask('default', ['jshint:beforeconcat', 'jasmine', 'concat', 'jshint:afterconcat']);
 }
