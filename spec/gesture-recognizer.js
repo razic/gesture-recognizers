@@ -1,3 +1,5 @@
+'use strict';
+
 describe('GestureRecognizer', function() {
   var gestureRecognizer;
 
