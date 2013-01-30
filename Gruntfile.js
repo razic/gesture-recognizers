@@ -15,7 +15,7 @@ module.exports = function (grunt) {
   sourceFiles = [
     'src/gesture-recognizer.js',
     'src/tap-recognizer.js',
-    'src/pan-recognizer.js'
+    'src/pan-gesture-recognizer.js'
   ];
 
   specAndSourceFiles = specFiles.concat(sourceFiles);

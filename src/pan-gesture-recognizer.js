@@ -1,4 +1,4 @@
-function PanRecognizer(node) {
+function PanGestureRecognizer(node) {
   var minimumNumberOfTouches;
   var maximumNumberOfTouches;
   var minimumNumberOfPixelsTranslatedBeforeRecognized;
@@ -30,4 +30,4 @@ function PanRecognizer(node) {
   node.addEventListener('touchend', touchEnd, false);
 }
 
-PanRecognizer.prototype = new GestureRecognizer();
+PanGestureRecognizer.prototype = new GestureRecognizer();
