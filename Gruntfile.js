@@ -5,7 +5,7 @@ module.exports = function (grunt) {
   var specFiles;
   var sourceFiles;
 
-  buildFile = 'dist/touch.js';
+  buildFile = 'gesture-recognizers.js';
 
   specFiles = [
     'spec/gesture-recognizer.js',

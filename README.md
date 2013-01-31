@@ -1,3 +1,3 @@
-# touch
+# gesture-recognizers
 
-Multi-touch gesture recognition
+> Multitouch gesture recognition for WebKit inspired by iOS

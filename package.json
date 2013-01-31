@@ -1,6 +1,6 @@
 {
-  "name": "touch",
-  "description": "Multi-touch gesture recognition",
+  "name": "gesture-recognizers",
+  "description": "Multitouch gesture recognition for WebKit inspired by iOS",
   "version": "0.1.0",
   "devDependencies": {
     "grunt": "~0.4.0",
