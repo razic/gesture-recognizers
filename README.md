@@ -4,9 +4,10 @@
 
 ## Gestures
 
-| Class name           | Apple equivalent       |
+| Class name           | iOS equivalent         |
 | -------------------- | ---------------------- |
-| PanGestureRecognizer | UIPanGestureRecognizer |
+| [GestureRecognizer](https://github.com/razic/gesture-recognizers/blob/master/src/gesture-recognizer.js) | [UIGestureRecognizer](http://developer.apple.com/library/ios/#documentation/uikit/reference/UIGestureRecognizer_Class/Reference/Reference.html) |
+| [PanGestureRecognizer](https://github.com/razic/gesture-recognizers/blob/master/src/pan-gesture-recognizer.js) | [UIPanGestureRecognizer](http://developer.apple.com/library/ios/#documentation/uikit/reference/UIPanGestureRecognizer_Class/Reference/Reference.html) |
 
 ## Contributing
 
