@@ -32,6 +32,7 @@ module.exports = function (grunt) {
     jshint: {
       specs: {
         options: {
+          multistr: true,
           globals: {
             it: false,
             expect: false,
