@@ -1,3 +1,5 @@
 .DS_Store
+/.grunt/
 /gesture-recognizers.js
 /node_modules/
+/_SpecRunner.html
