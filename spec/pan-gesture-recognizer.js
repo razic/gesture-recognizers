@@ -55,5 +55,24 @@ describe('PanGestureRecognizer', function() {
     it('changes to the began state', function() {
       expect(recognizer.state).toBe('began');
     });
+
+    describe('when a finger moves while at least the minimum number of \
+    fingers are pressed down', function() {
+      beforeEach(function() {
+        var touchC;
+        var touchListC;
+        var touchEventC;
+
+        touchC = { clientX: 20, clientY: 10 };
+        touchListC = { 0: touchC, length: 1 };
+        touchEventC = createTouchEvent('touchmove', false, false, touchListC);
+
+        target.dispatchEvent(touchEventC);
+      });
+
+      it('it changes to the changed state', function() {
+        expect(recognizer.state).toBe('changed');
+      });
+    });
   });
 });
