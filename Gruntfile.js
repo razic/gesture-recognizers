@@ -34,6 +34,7 @@ module.exports = function (grunt) {
         options: {
           multistr: true,
           globals: {
+            console: false,
             it: false,
             expect: false,
             xit: false,
@@ -54,7 +55,7 @@ module.exports = function (grunt) {
       src: {
         options: {
           globals: {
-            document: false
+            console: false
           }
         },
         files: {
@@ -64,7 +65,7 @@ module.exports = function (grunt) {
       build: {
         options: {
           globals: {
-            document: false
+            console: false
           }
         },
         files: {
