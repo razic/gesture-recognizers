@@ -70,8 +70,24 @@ describe('PanGestureRecognizer', function() {
         target.dispatchEvent(touchEventC);
       });
 
-      it('it changes to the changed state', function() {
+      it('changes to the changed state', function() {
         expect(recognizer.state).toBe('changed');
+      });
+    });
+
+    describe('when all fingers are lifted', function() {
+      beforeEach(function(){
+        var touchListD;
+        var touchEventD;
+
+        touchListD = { length: 0 };
+        touchEventD = createTouchEvent('touchend', false, false, touchListD);
+
+        target.dispatchEvent(touchEventD);
+      });
+
+      it('changes to the ended state', function() {
+        expect(recognizer.state).toBe('ended');
       });
     });
   });
