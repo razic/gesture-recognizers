@@ -63,8 +63,7 @@ function PanGestureRecognizer(target, action) {
   }).bind(this);
 
   this.totalPixelsTranslatedGreaterThanMinumum = function(event) {
-    // TODO: This should account for negative numbers (reflect in test)
-    return this.translationX + this.translationY >=
+    return Math.abs(this.translationX) + Math.abs(this.translationY) >=
       this.minimumNumberOfPixelsTranslatedBeforeRecognized;
   };
 

@@ -43,7 +43,7 @@ describe('PanGestureRecognizer', function() {
       var touchEventB;
 
       recognizer = new PanGestureRecognizer(target, action);
-      touchA = { clientX: 10, clientY: 10 };
+      touchA = { clientX: 20, clientY: 10 };
       touchB = { clientX: 15, clientY: 10 };
       touchListA = { 0: touchA, length: 1 };
       touchListB = { 0: touchB, length: 1 };
@@ -70,7 +70,7 @@ describe('PanGestureRecognizer', function() {
         var touchListC;
         var touchEventC;
 
-        touchC = { clientX: 20, clientY: 10 };
+        touchC = { clientX: 10, clientY: 10 };
         touchListC = { 0: touchC, length: 1 };
         touchEventC = createTouchEvent('touchmove', false, false, touchListC);
 
@@ -92,7 +92,7 @@ describe('PanGestureRecognizer', function() {
           var touchList;
           var touchEvent;
 
-          touch = { clientX: 20, clientY: 20 };
+          touch = { clientX: 5, clientY: 20 };
           touchList = { 0: touch, length: 1 };
           touchEvent = createTouchEvent('touchmove', false, false, touchList);
 
