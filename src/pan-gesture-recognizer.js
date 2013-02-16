@@ -1,8 +1,9 @@
-function PanGestureRecognizer(target) {
+function PanGestureRecognizer(target, action) {
   'use strict';
 
   this.startX = null;
   this.startY = null;
+  this.action = action;
   this.translationX = null;
   this.translationY = null;
   this.minimumNumberOfTouches = 1;
@@ -37,10 +38,12 @@ function PanGestureRecognizer(target) {
       this.totalPixelsTranslatedGreaterThanMinumum()
     ) {
       this.state = 'began';
+      this.action(this);
     } else if (
       this.state == 'began'
     ) {
       this.state = 'changed';
+      this.action(this);
     }
 
     event.preventDefault();
@@ -52,6 +55,7 @@ function PanGestureRecognizer(target) {
     targetTouchesLength = event.targetTouches.length;
 
     if (targetTouchesLength <= 0) { this.state = 'ended'; }
+    this.action(this);
   }).bind(this);
 
   this.totalPixelsTranslatedGreaterThanMinumum = function(event) {

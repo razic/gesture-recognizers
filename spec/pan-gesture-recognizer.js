@@ -2,6 +2,7 @@ describe('PanGestureRecognizer', function() {
   'use strict';
 
   var target;
+  var action;
   var recognizer;
 
   function createTouchEvent(type, canBubble, cancelable, targetTouches) {
@@ -17,12 +18,13 @@ describe('PanGestureRecognizer', function() {
 
   beforeEach(function() {
     target = document.body;
+    action = function() {};
   });
 
-  it('should set touch event listeners on the specified target', function(){
+  it('should set touch event listeners on the specified target', function() {
     spyOn(target, 'addEventListener');
 
-    recognizer = new PanGestureRecognizer(target);
+    recognizer = new PanGestureRecognizer(target, action);
 
     expect(target.addEventListener).
     toHaveBeenCalledWith('touchstart', recognizer.touchStart, false);
@@ -40,7 +42,7 @@ describe('PanGestureRecognizer', function() {
       var touchEventA;
       var touchEventB;
 
-      recognizer = new PanGestureRecognizer(target);
+      recognizer = new PanGestureRecognizer(target, action);
       touchA = { clientX: 10, clientY: 10 };
       touchB = { clientX: 15, clientY: 10 };
       touchListA = { 0: touchA, length: 1 };
@@ -48,12 +50,17 @@ describe('PanGestureRecognizer', function() {
       touchEventA = createTouchEvent('touchstart', false, false, touchListA);
       touchEventB = createTouchEvent('touchmove', false, false, touchListB);
 
+      spyOn(recognizer, 'action');
       target.dispatchEvent(touchEventA);
       target.dispatchEvent(touchEventB);
     });
 
     it('changes to the began state', function() {
       expect(recognizer.state).toBe('began');
+    });
+
+    it('should call the specified action', function() {
+      expect(recognizer.action.mostRecentCall.args[0]).toBe(recognizer);
     });
 
     describe('when a finger moves while at least the minimum number of \
@@ -73,6 +80,10 @@ describe('PanGestureRecognizer', function() {
       it('changes to the changed state', function() {
         expect(recognizer.state).toBe('changed');
       });
+
+      it('should call the specified action', function() {
+        expect(recognizer.action.mostRecentCall.args[0]).toBe(recognizer);
+      });
     });
 
     describe('when all fingers are lifted', function() {
@@ -88,6 +99,10 @@ describe('PanGestureRecognizer', function() {
 
       it('changes to the ended state', function() {
         expect(recognizer.state).toBe('ended');
+      });
+
+      it('should call the specified action', function() {
+        expect(recognizer.action.mostRecentCall.args[0]).toBe(recognizer);
       });
     });
   });
