@@ -84,10 +84,34 @@ describe('PanGestureRecognizer', function() {
       it('should call the specified action', function() {
         expect(recognizer.action.mostRecentCall.args[0]).toBe(recognizer);
       });
+
+      describe('when a finger moves again while at least the minimum number \
+      of fingers are pressed down', function(){
+        beforeEach(function() {
+          var touch;
+          var touchList;
+          var touchEvent;
+
+          touch = { clientX: 20, clientY: 20 };
+          touchList = { 0: touch, length: 1 };
+          touchEvent = createTouchEvent('touchmove', false, false, touchList);
+
+          target.dispatchEvent(touchEvent);
+        });
+
+        it('should still be in the changed state', function() {
+          expect(recognizer.state).toBe('changed');
+        });
+
+        it('should still call the specified action', function() {
+          expect(recognizer.action.calls.length).toBeGreaterThan(2);
+          expect(recognizer.action.mostRecentCall.args[0]).toBe(recognizer);
+        });
+      });
     });
 
     describe('when all fingers are lifted', function() {
-      beforeEach(function(){
+      beforeEach(function() {
         var touchListD;
         var touchEventD;
 

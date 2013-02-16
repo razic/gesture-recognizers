@@ -39,10 +39,14 @@ function PanGestureRecognizer(target, action) {
     ) {
       this.state = 'began';
       this.action(this);
-    } else if (
-      this.state == 'began'
-    ) {
+    } else if (this.state == 'began') {
       this.state = 'changed';
+      this.action(this);
+    } else if (
+      this.state == 'changed' &&
+      targetTouchesLength >= this.minimumNumberOfTouches &&
+      targetTouchesLength <= this.maximumNumberOfTouches
+    ) {
       this.action(this);
     }
 
@@ -59,6 +63,7 @@ function PanGestureRecognizer(target, action) {
   }).bind(this);
 
   this.totalPixelsTranslatedGreaterThanMinumum = function(event) {
+    // TODO: This should account for negative numbers (reflect in test)
     return this.translationX + this.translationY >=
       this.minimumNumberOfPixelsTranslatedBeforeRecognized;
   };
