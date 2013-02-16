@@ -46,7 +46,7 @@ function PanGestureRecognizer(target) {
     event.preventDefault();
   }).bind(this);
 
-  this.touchEnd = (function(event){
+  this.touchEnd = (function(event) {
     var targetTouchesLength;
 
     targetTouchesLength = event.targetTouches.length;
@@ -57,6 +57,14 @@ function PanGestureRecognizer(target) {
   this.totalPixelsTranslatedGreaterThanMinumum = function(event) {
     return this.translationX + this.translationY >=
       this.minimumNumberOfPixelsTranslatedBeforeRecognized;
+  };
+
+  this.reset = function() {
+    this.state = 'possible';
+    this.startX = null;
+    this.startY = null;
+    this.translationX = null;
+    this.translationY = null;
   };
 
   target.addEventListener('touchstart', this.touchStart, false);
