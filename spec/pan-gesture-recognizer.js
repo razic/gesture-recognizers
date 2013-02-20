@@ -4,7 +4,6 @@ describe('PanGestureRecognizer', function() {
   var target; // The element to recognize gestures on
   var action; // The action called when gesture changes state
   var recognizer; // The recognizer object
-  var getTime; // The function that Date.now() becomes stubbed with
   var startTime; // The time the gesture was recognized (Epoch format)
   var currentTime; // The current time (Epoch format)
   var intervalTime; // The Interval time between touch events (Epoch format)
@@ -56,136 +55,107 @@ describe('PanGestureRecognizer', function() {
     touchEventC = createTouchEvent('touchmove', false, false, touchListC);
     touchEventD = createTouchEvent('touchmove', false, false, touchListD);
     touchEventE = createTouchEvent('touchend', false, false, touchListE);
-    getTime = function(){ return currentTime += intervalTime; };
-  });
 
-  it('should set touch event listeners on the specified target', function() {
-    spyOn(target, 'addEventListener');
+    spyOn(target, 'addEventListener').andCallThrough();
 
     recognizer = new PanGestureRecognizer(target, action);
 
+    spyOn(recognizer, 'action').andCallThrough();
+    spyOn(recognizer, 'recordTime').andCallFake(function() {
+      return recognizer.lastRecordedTime = (currentTime += intervalTime);
+    });
+  });
+
+  it('should set touch event listeners on the specified target', function() {
     expect(target.addEventListener).
-    toHaveBeenCalledWith('touchstart', recognizer.touchStart, false);
+      toHaveBeenCalledWith('touchstart', recognizer.touchStart, false);
     expect(target.addEventListener).
-    toHaveBeenCalledWith('touchmove', recognizer.touchMove, false);
+      toHaveBeenCalledWith('touchmove', recognizer.touchMove, false);
   });
 
   describe('when the minimum number of fingers allowed has moved enough to be \
   considered a pan', function() {
-    beforeEach(function() {
-      recognizer = new PanGestureRecognizer(target, action);
-
-      spyOn(recognizer, 'action');
-      spyOn(Date, 'now').andCallFake(getTime);
-
-      console.log('calling before each');
-    });
-
-    it('should change to the began state', function() {
+    beforeEach(function(){
       target.dispatchEvent(touchEventA);
       target.dispatchEvent(touchEventB);
-
-      expect(recognizer.state).toBe('began');
     });
 
     it('should record the time', function() {
-      target.dispatchEvent(touchEventA);
-      target.dispatchEvent(touchEventB);
-
-      expect(Date.now.calls.length).toEqual(1);
+      expect(recognizer.recordTime.calls.length).toEqual(1);
       expect(recognizer.lastRecordedTime).toBe(startTime + intervalTime);
     });
 
-    it('should call the specified action', function() {
-      target.dispatchEvent(touchEventA);
-      target.dispatchEvent(touchEventB);
+    it('should change to the began state', function() {
+      expect(recognizer.state).toBe('began');
+    });
 
+    it('should call the specified action', function() {
       expect(recognizer.action.calls.length).toBeGreaterThan(0);
       expect(recognizer.action.mostRecentCall.args[0]).toBe(recognizer);
     });
 
     describe('when a finger moves while at least the minimum number of \
     fingers are pressed down', function() {
-      it('should change to the changed state', function() {
-        target.dispatchEvent(touchEventA);
-        target.dispatchEvent(touchEventB);
+      beforeEach(function(){
         target.dispatchEvent(touchEventC);
+      });
 
+      it('should change to the changed state', function() {
         expect(recognizer.state).toBe('changed');
       });
 
       it('should rerecord the time', function() {
-        target.dispatchEvent(touchEventA);
-        target.dispatchEvent(touchEventB);
-        target.dispatchEvent(touchEventC);
+        var expectedTime;
 
-        expect(Date.now.calls.length).toEqual(2);
-        expect(recognizer.lastRecordedTime).toBe(startTime + (intervalTime * 2));
+        expectedTime = startTime + (intervalTime * 2);
+
+        expect(recognizer.recordTime.calls.length).toEqual(2);
+        expect(recognizer.lastRecordedTime).toBe(expectedTime);
       });
 
       it('should call the specified action', function() {
-        target.dispatchEvent(touchEventA);
-        target.dispatchEvent(touchEventB);
-        target.dispatchEvent(touchEventC);
-
         expect(recognizer.action.calls.length).toBeGreaterThan(1);
         expect(recognizer.action.mostRecentCall.args[0]).toBe(recognizer);
       });
 
       describe('when a finger moves again while at least the minimum number \
       of fingers are pressed down', function(){
-        it('should still be in the changed state', function() {
-          target.dispatchEvent(touchEventA);
-          target.dispatchEvent(touchEventB);
-          target.dispatchEvent(touchEventC);
+        beforeEach(function() {
           target.dispatchEvent(touchEventD);
+        });
 
+        it('should still be in the changed state', function() {
           expect(recognizer.state).toBe('changed');
         });
 
         it('should rerecord the time again', function() {
-          console.log('in 24');
-          target.dispatchEvent(touchEventA);
-          target.dispatchEvent(touchEventB);
-          target.dispatchEvent(touchEventC);
-          target.dispatchEvent(touchEventD);
+          var expectedTime;
 
-          expect(Date.now.calls.length).toEqual(3);
-          expect(recognizer.lastRecordedTime).toBe(startTime + (intervalTime * 3));
+          expectedTime = startTime + (intervalTime * 3);
+
+          expect(recognizer.recordTime.calls.length).toEqual(3);
+          expect(recognizer.lastRecordedTime).toBe(expectedTime);
         });
 
         it('should still call the specified action', function() {
-          target.dispatchEvent(touchEventA);
-          target.dispatchEvent(touchEventB);
-          target.dispatchEvent(touchEventC);
-          target.dispatchEvent(touchEventD);
-
           expect(recognizer.action.calls.length).toBeGreaterThan(2);
           expect(recognizer.action.mostRecentCall.args[0]).toBe(recognizer);
         });
-      });
-    });
 
-    describe('when all fingers are lifted', function() {
-      it('changes to the ended state', function() {
-        target.dispatchEvent(touchEventA);
-        target.dispatchEvent(touchEventB);
-        target.dispatchEvent(touchEventC);
-        target.dispatchEvent(touchEventD);
-        target.dispatchEvent(touchEventE);
+        describe('when all fingers are lifted', function() {
+          beforeEach(function() {
+            target.dispatchEvent(touchEventE);
+          });
 
-        expect(recognizer.state).toBe('ended');
-      });
+          it('changes to the ended state', function() {
+            expect(recognizer.state).toBe('ended');
+          });
 
-      it('should call the specified action', function() {
-        target.dispatchEvent(touchEventA);
-        target.dispatchEvent(touchEventB);
-        target.dispatchEvent(touchEventC);
-        target.dispatchEvent(touchEventD);
-        target.dispatchEvent(touchEventE);
-
-        expect(recognizer.action.calls.length).toBeGreaterThan(3);
-        expect(recognizer.action.mostRecentCall.args[0]).toBe(recognizer);
+          it('should call the specified action', function() {
+            expect(recognizer.action.calls.length).toBeGreaterThan(3);
+            expect(recognizer.action.mostRecentCall.args[0]).toBe(recognizer);
+          });
+        });
       });
     });
   });
