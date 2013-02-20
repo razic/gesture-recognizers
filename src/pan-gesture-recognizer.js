@@ -25,6 +25,7 @@ function PanGestureRecognizer(target, action) {
     var lastTouch;
     var targetTouchesLength;
 
+
     lastTouch = event.targetTouches[0];
     targetTouchesLength = event.targetTouches.length;
 
@@ -37,9 +38,11 @@ function PanGestureRecognizer(target, action) {
       targetTouchesLength <= this.maximumNumberOfTouches &&
       this.totalPixelsTranslatedGreaterThanMinumum()
     ) {
+      this.lastRecordedTime = Date.now();
       this.state = 'began';
       this.action(this);
     } else if (this.state == 'began') {
+      this.lastRecordedTime = Date.now();
       this.state = 'changed';
       this.action(this);
     } else if (
@@ -47,6 +50,7 @@ function PanGestureRecognizer(target, action) {
       targetTouchesLength >= this.minimumNumberOfTouches &&
       targetTouchesLength <= this.maximumNumberOfTouches
     ) {
+      this.lastRecordedTime = Date.now();
       this.action(this);
     }
 
