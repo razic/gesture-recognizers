@@ -29,11 +29,8 @@ function PanGestureRecognizer(target, action) {
     lastTouch = event.targetTouches[0];
     targetTouchesLength = event.targetTouches.length;
 
-    // TODO: Test this
-    if(this.startX && this.startY) {
-      this.translationX = lastTouch.clientX - this.startX;
-      this.translationY = lastTouch.clientY - this.startY;
-    }
+    this.translationX = lastTouch.clientX - this.startX;
+    this.translationY = lastTouch.clientY - this.startY;
 
     if (
       this.state == 'possible' &&
