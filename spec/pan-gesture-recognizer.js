@@ -11,7 +11,9 @@ describe('PanGestureRecognizer', function() {
   var touchEventB; // The gesture was recognized
   var touchEventC; // The gesture is continuing
   var touchEventD; // The gesture is still continuing
-  var touchEventE; // The gesture ended
+  var touchEventE; // Another finger touched down
+  var touchEventF; // A finger was lifted
+  var touchEventG; // All fingers are lifted
 
   function createTouchEvent(type, canBubble, cancelable, targetTouches) {
     var event;
@@ -35,6 +37,8 @@ describe('PanGestureRecognizer', function() {
     var touchListC;
     var touchListD;
     var touchListE;
+    var touchListF;
+    var touchListG;
 
     target = document.body;
     action = function() {};
@@ -45,16 +49,21 @@ describe('PanGestureRecognizer', function() {
     touchB = { clientX: 14, clientY: 10 };
     touchC = { clientX: 10, clientY: 10 };
     touchD = { clientX: 5, clientY: 20 };
+    touchE = { clientX: 20, clientY: 35 };
     touchListA = { 0: touchA, length: 1 };
     touchListB = { 0: touchB, length: 1 };
     touchListC = { 0: touchC, length: 1 };
     touchListD = { 0: touchD, length: 1 };
-    touchListE = { length: 0 };
+    touchListE = { 0: touchD, 1: touchE, length: 1 };
+    touchListF = { 0: touchE, length: 1 };
+    touchListG = { length: 0 };
     touchEventA = createTouchEvent('touchstart', false, false, touchListA);
     touchEventB = createTouchEvent('touchmove', false, false, touchListB);
     touchEventC = createTouchEvent('touchmove', false, false, touchListC);
     touchEventD = createTouchEvent('touchmove', false, false, touchListD);
-    touchEventE = createTouchEvent('touchend', false, false, touchListE);
+    touchEventE = createTouchEvent('touchstart', false, false, touchListE);
+    touchEventF = createTouchEvent('touchend', false, false, touchListF);
+    touchEventG = createTouchEvent('touchend', false, false, touchListG);
 
     spyOn(target, 'addEventListener').andCallThrough();
 
@@ -142,9 +151,26 @@ describe('PanGestureRecognizer', function() {
           expect(recognizer.action.mostRecentCall.args[0]).toBe(recognizer);
         });
 
-        describe('when all fingers are lifted', function() {
+        describe('when a finger is lifted but the minimum number of fingers \
+        are still pressed down', function(){
           beforeEach(function() {
             target.dispatchEvent(touchEventE);
+            target.dispatchEvent(touchEventF);
+          });
+
+          it('translation values should be reported as normal', function() {
+            // This prevents the translation values from being calculated
+            // from the original startX and startY which is recorded the first
+            // time a finger touched down
+
+            expect(recognizer.startX).toEqual(35);
+            expect(recognizer.startY).toEqual(25);
+          });
+        });
+
+        describe('when all fingers are lifted', function() {
+          beforeEach(function() {
+            target.dispatchEvent(touchEventG);
           });
 
           it('changes to the ended state', function() {
