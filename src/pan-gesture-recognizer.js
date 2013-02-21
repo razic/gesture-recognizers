@@ -39,20 +39,18 @@ function PanGestureRecognizer(target, action) {
     ) {
       this.recordTime();
       this.state = 'began';
-      this.action(this);
     } else if (this.state == 'began') {
       this.recordTime();
       this.state = 'changed';
-      this.action(this);
     } else if (
       this.state == 'changed' &&
       targetTouchesLength >= this.minimumNumberOfTouches &&
       targetTouchesLength <= this.maximumNumberOfTouches
     ) {
       this.recordTime();
-      this.action(this);
     }
 
+    this.action(this);
     event.preventDefault();
   }).bind(this);
 
