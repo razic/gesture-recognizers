@@ -1,74 +1,84 @@
 function PanGestureRecognizer(target, action) {
   'use strict';
 
-  this.startX = null;
-  this.startY = null;
+  this.velocity = 1;
   this.action = action;
-  this.translationX = null;
-  this.translationY = null;
   this.minimumNumberOfTouches = 1;
   this.maximumNumberOfTouches = 10;
   this.minimumNumberOfPixelsTranslatedBeforeRecognized = 5;
 
   this.touchStart = (function(event) {
-    var lastTouch;
+    var firstTouch;
 
-    lastTouch = event.targetTouches[0];
+    firstTouch = event.targetTouches[0];
 
-    this.startX = this.startX || lastTouch.clientX;
-    this.startY = this.startY || lastTouch.clientY;
+    this.startX = firstTouch.clientX;
+    this.startY = firstTouch.clientY;
 
     event.preventDefault();
   }).bind(this);
 
   this.touchMove = (function(event) {
-    var lastTouch;
+    var firstTouch;
+    var translationX;
+    var translationY;
     var targetTouchesLength;
+    var startX;
+    var startY;
 
-    lastTouch = event.targetTouches[0];
+    firstTouch = event.targetTouches[0];
     targetTouchesLength = event.targetTouches.length;
+    startX = this.startX;
+    startY = this.startY;
 
-    this.translationX = lastTouch.clientX - this.startX;
-    this.translationY = lastTouch.clientY - this.startY;
-
-    if (
+    if(
       this.state == 'possible' &&
       targetTouchesLength >= this.minimumNumberOfTouches &&
       targetTouchesLength <= this.maximumNumberOfTouches &&
       this.totalPixelsTranslatedGreaterThanMinumum()
-    ) {
-      this.recordTime();
+      ) {
       this.state = 'began';
-    } else if (this.state == 'began') {
-      this.recordTime();
+      this.timeBegan = Date.now();
+      this.translationX = 0;
+      this.translationY = 0;
+
+      this.action(this);
+
+      this.startX = firstTouch.clientX;
+      this.startY = firstTouch.clientY;
+    } else if(this.state == 'began') {
       this.state = 'changed';
-    } else if (
-      this.state == 'changed' &&
-      targetTouchesLength >= this.minimumNumberOfTouches &&
-      targetTouchesLength <= this.maximumNumberOfTouches
-    ) {
-      this.recordTime();
+
+      this.translationX = firstTouch.clientX - startX;
+      this.translationY = firstTouch.clientY - startY;
+      this.action(this);
+    } else if(this.state == 'changed') {
+      this.translationX = firstTouch.clientX - startX;
+      this.translationY = firstTouch.clientY - startY;
+      this.action(this);
+    } else {
+      this.translationX = firstTouch.clientX - this.startX;
+      this.translationY = firstTouch.clientY - this.startY;
     }
 
-    this.action(this);
     event.preventDefault();
   }).bind(this);
 
   this.touchEnd = (function(event) {
+    var firstTouch;
     var targetTouchesLength;
-    var lastTouch;
 
+    firstTouch = event.targetTouches[0];
     targetTouchesLength = event.targetTouches.length;
 
     if (targetTouchesLength <= 0) {
       this.state = 'ended';
+      this.action(this);
     } else {
-      lastTouch = event.targetTouches[0];
-      this.startX = lastTouch.clientX - this.translationX;
-      this.startY = lastTouch.clientY - this.translationY;
+      this.startX = firstTouch.clientX - this.translationX;
+      this.startY = firstTouch.clientY - this.translationY;
     }
 
-    this.action(this);
     event.preventDefault();
   }).bind(this);
 
@@ -77,16 +87,37 @@ function PanGestureRecognizer(target, action) {
       this.minimumNumberOfPixelsTranslatedBeforeRecognized;
   };
 
-  this.recordTime = function() {
-    this.lastRecordedTime = Date.now();
+  this.calculateVelocity = function() {
+    var x;
+    var y;
+
+    x = this.translationX;
+    y = this.translationY;
+
+    if(x > 0  && y > 0) {
+      this.velocity = this.distance(x, y) / (Date.now() - this.timeBegan);
+    } else {
+      this.velocity = 1;
+    }
+  };
+
+  this.distance = function(x, y) {
+    return Math.sqrt(Math.pow(x, 2) / Math.pow(y, 2));
   };
 
   this.reset = function() {
     this.state = 'possible';
-    this.startX = null;
-    this.startY = null;
-    this.translationX = null;
-    this.translationY = null;
+    this.startX = 0;
+    this.startY = 0;
+    this.translationX = 0;
+    this.translationY = 0;
+  };
+
+  this.setTranslation = function(x, y) {
+    this.startX += this.translationX;
+    this.startY += this.translationY;
+    this.translationX = x;
+    this.translationY = y;
   };
 
   target.addEventListener('touchstart', this.touchStart, false);
