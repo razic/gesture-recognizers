@@ -23,20 +23,28 @@ function PanGestureRecognizer(target, action) {
     var translationX;
     var translationY;
     var targetTouchesLength;
-    var startX;
     var startY;
+    var startX;
+    var clientX;
+    var clientY;
 
     firstTouch = event.targetTouches[0];
     targetTouchesLength = event.targetTouches.length;
     startX = this.startX;
     startY = this.startY;
+    clientX = firstTouch.clientX;
+    clientY = firstTouch.clientY;
 
-    if(
-      this.state == 'possible' &&
-      targetTouchesLength >= this.minimumNumberOfTouches &&
-      targetTouchesLength <= this.maximumNumberOfTouches &&
-      this.totalPixelsTranslatedGreaterThanMinumum()
-      ) {
+    this.translationX = clientX - startX;
+    this.translationY = clientY - startY;
+
+    if(this.state == 'changed') {
+      this.action(this);
+    } else if(this.state == 'began') {
+      this.state = 'changed';
+
+      this.action(this);
+    } else if(this.canBegin(targetTouchesLength)) {
       this.state = 'began';
       this.timeBegan = Date.now();
       this.translationX = 0;
@@ -44,21 +52,8 @@ function PanGestureRecognizer(target, action) {
 
       this.action(this);
 
-      this.startX = firstTouch.clientX;
-      this.startY = firstTouch.clientY;
-    } else if(this.state == 'began') {
-      this.state = 'changed';
-
-      this.translationX = firstTouch.clientX - startX;
-      this.translationY = firstTouch.clientY - startY;
-      this.action(this);
-    } else if(this.state == 'changed') {
-      this.translationX = firstTouch.clientX - startX;
-      this.translationY = firstTouch.clientY - startY;
-      this.action(this);
-    } else {
-      this.translationX = firstTouch.clientX - this.startX;
-      this.translationY = firstTouch.clientY - this.startY;
+      this.startX = clientX;
+      this.startY = clientY;
     }
 
     event.preventDefault();
@@ -118,6 +113,13 @@ function PanGestureRecognizer(target, action) {
     this.startY += this.translationY;
     this.translationX = x;
     this.translationY = y;
+  };
+
+  this.canBegin = function(targetTouchesLength) {
+    return this.state == 'possible' &&
+      targetTouchesLength >= this.minimumNumberOfTouches &&
+        targetTouchesLength <= this.maximumNumberOfTouches &&
+          this.totalPixelsTranslatedGreaterThanMinumum();
   };
 
   target.addEventListener('touchstart', this.touchStart, false);

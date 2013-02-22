@@ -70,9 +70,6 @@ describe('PanGestureRecognizer', function() {
     recognizer = new PanGestureRecognizer(target, action);
 
     spyOn(recognizer, 'action').andCallThrough();
-    spyOn(recognizer, 'recordTime').andCallFake(function() {
-      return recognizer.lastRecordedTime = (currentTime += intervalTime);
-    });
   });
 
   it('should set touch event listeners on the specified target', function() {
@@ -89,11 +86,6 @@ describe('PanGestureRecognizer', function() {
       target.dispatchEvent(touchEventB);
     });
 
-    it('should record the time', function() {
-      expect(recognizer.recordTime.calls.length).toEqual(1);
-      expect(recognizer.lastRecordedTime).toBe(startTime + intervalTime);
-    });
-
     it('should change to the began state', function() {
       expect(recognizer.state).toBe('began');
     });
@@ -101,6 +93,11 @@ describe('PanGestureRecognizer', function() {
     it('should call the specified action', function() {
       expect(recognizer.action.calls.length).toBeGreaterThan(0);
       expect(recognizer.action.mostRecentCall.args[0]).toBe(recognizer);
+    });
+
+    it('should report translation coordinates of xy(0, 0)', function() {
+      expect(recognizer.translationX).toEqual(0);
+      expect(recognizer.translationY).toEqual(0);
     });
 
     describe('when a finger moves while at least the minimum number of \
@@ -111,15 +108,6 @@ describe('PanGestureRecognizer', function() {
 
       it('should change to the changed state', function() {
         expect(recognizer.state).toBe('changed');
-      });
-
-      it('should rerecord the time', function() {
-        var expectedTime;
-
-        expectedTime = startTime + (intervalTime * 2);
-
-        expect(recognizer.recordTime.calls.length).toEqual(2);
-        expect(recognizer.lastRecordedTime).toBe(expectedTime);
       });
 
       it('should call the specified action', function() {
@@ -137,15 +125,6 @@ describe('PanGestureRecognizer', function() {
           expect(recognizer.state).toBe('changed');
         });
 
-        it('should rerecord the time again', function() {
-          var expectedTime;
-
-          expectedTime = startTime + (intervalTime * 3);
-
-          expect(recognizer.recordTime.calls.length).toEqual(3);
-          expect(recognizer.lastRecordedTime).toBe(expectedTime);
-        });
-
         it('should still call the specified action', function() {
           expect(recognizer.action.calls.length).toBeGreaterThan(2);
           expect(recognizer.action.mostRecentCall.args[0]).toBe(recognizer);
@@ -158,12 +137,14 @@ describe('PanGestureRecognizer', function() {
             target.dispatchEvent(touchEventF);
           });
 
-          it('translation values should be reported as normal', function() {
+          it('the current translation coordinates should be calculated from a \
+          new starting point equal to the current coordinates of the oldest \
+          touch minus the current translation', function() {
             // This prevents the translation values from being calculated
             // from the original startX and startY which is recorded the first
             // time a finger touched down
 
-            expect(recognizer.startX).toEqual(35);
+            expect(recognizer.startX).toEqual(29);
             expect(recognizer.startY).toEqual(25);
           });
         });
