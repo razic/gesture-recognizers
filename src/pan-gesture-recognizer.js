@@ -1,6 +1,8 @@
 function PanGestureRecognizer(target, action) {
   'use strict';
 
+  var actionLastCalledAt;
+
   this.velocity = 1;
   this.action = action;
   this.minimumNumberOfTouches = 1;
@@ -23,10 +25,12 @@ function PanGestureRecognizer(target, action) {
     var translationX;
     var translationY;
     var targetTouchesLength;
-    var startY;
     var startX;
+    var startY;
     var clientX;
     var clientY;
+    var previousClientX;
+    var previousClientY;
 
     firstTouch = event.targetTouches[0];
     targetTouchesLength = event.targetTouches.length;
@@ -34,23 +38,32 @@ function PanGestureRecognizer(target, action) {
     startY = this.startY;
     clientX = firstTouch.clientX;
     clientY = firstTouch.clientY;
+    previousClientX = startX + (this.translationX || 0);
+    previousClientY = startY + (this.translationY || 0);
 
     this.translationX = clientX - startX;
     this.translationY = clientY - startY;
 
     if(this.state == 'changed') {
-      this.action(this);
+      this.calculateVelocity(
+        clientX, previousClientX, clientY, previousClientY
+      );
+
+      this.callAction();
     } else if(this.state == 'began') {
       this.state = 'changed';
 
-      this.action(this);
+      this.calculateVelocity(
+        clientX, previousClientX, clientY, previousClientY
+      );
+
+      this.callAction();
     } else if(this.canBegin(targetTouchesLength)) {
       this.state = 'began';
-      this.timeBegan = Date.now();
       this.translationX = 0;
       this.translationY = 0;
 
-      this.action(this);
+      this.callAction();
 
       this.startX = clientX;
       this.startY = clientY;
@@ -68,7 +81,7 @@ function PanGestureRecognizer(target, action) {
 
     if (targetTouchesLength <= 0) {
       this.state = 'ended';
-      this.action(this);
+      this.callAction(this);
     } else {
       this.startX = firstTouch.clientX - this.translationX;
       this.startY = firstTouch.clientY - this.translationY;
@@ -82,22 +95,20 @@ function PanGestureRecognizer(target, action) {
       this.minimumNumberOfPixelsTranslatedBeforeRecognized;
   };
 
-  this.calculateVelocity = function() {
-    var x;
-    var y;
+  this.calculateVelocity = function(x2, x1, y2, y1) {
+    var timeDelta;
 
-    x = this.translationX;
-    y = this.translationY;
+    if(x1 >= 0 && x2 >= 0 && y1 >= 0  && y2 >= 0) {
+      timeDelta = Date.now() - actionLastCalledAt;
 
-    if(x > 0  && y > 0) {
-      this.velocity = this.distance(x, y) / (Date.now() - this.timeBegan);
+      this.velocity = this.distance(x2, x1, y2, y1) / timeDelta;
     } else {
       this.velocity = 1;
     }
   };
 
-  this.distance = function(x, y) {
-    return Math.sqrt(Math.pow(x, 2) / Math.pow(y, 2));
+  this.distance = function(x2, x1, y2, y1) {
+    return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
   };
 
   this.reset = function() {
@@ -120,6 +131,11 @@ function PanGestureRecognizer(target, action) {
       targetTouchesLength >= this.minimumNumberOfTouches &&
         targetTouchesLength <= this.maximumNumberOfTouches &&
           this.totalPixelsTranslatedGreaterThanMinumum();
+  };
+
+  this.callAction = function() {
+    actionLastCalledAt = Date.now();
+    this.action(this);
   };
 
   target.addEventListener('touchstart', this.touchStart, false);

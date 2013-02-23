@@ -69,7 +69,7 @@ describe('PanGestureRecognizer', function() {
 
     recognizer = new PanGestureRecognizer(target, action);
 
-    spyOn(recognizer, 'action').andCallThrough();
+    spyOn(recognizer, 'callAction').andCallThrough();
   });
 
   it('should set touch event listeners on the specified target', function() {
@@ -91,8 +91,7 @@ describe('PanGestureRecognizer', function() {
     });
 
     it('should call the specified action', function() {
-      expect(recognizer.action.calls.length).toBeGreaterThan(0);
-      expect(recognizer.action.mostRecentCall.args[0]).toBe(recognizer);
+      expect(recognizer.callAction.calls.length).toBeGreaterThan(0);
     });
 
     it('should report translation coordinates of xy(0, 0)', function() {
@@ -111,8 +110,7 @@ describe('PanGestureRecognizer', function() {
       });
 
       it('should call the specified action', function() {
-        expect(recognizer.action.calls.length).toBeGreaterThan(1);
-        expect(recognizer.action.mostRecentCall.args[0]).toBe(recognizer);
+        expect(recognizer.callAction.calls.length).toBeGreaterThan(1);
       });
 
       describe('when a finger moves again while at least the minimum number \
@@ -126,8 +124,7 @@ describe('PanGestureRecognizer', function() {
         });
 
         it('should still call the specified action', function() {
-          expect(recognizer.action.calls.length).toBeGreaterThan(2);
-          expect(recognizer.action.mostRecentCall.args[0]).toBe(recognizer);
+          expect(recognizer.callAction.calls.length).toBeGreaterThan(2);
         });
 
         describe('when a finger is lifted but the minimum number of fingers \
@@ -159,8 +156,7 @@ describe('PanGestureRecognizer', function() {
           });
 
           it('should call the specified action', function() {
-            expect(recognizer.action.calls.length).toBeGreaterThan(3);
-            expect(recognizer.action.mostRecentCall.args[0]).toBe(recognizer);
+            expect(recognizer.callAction.calls.length).toBeGreaterThan(3);
           });
         });
       });
