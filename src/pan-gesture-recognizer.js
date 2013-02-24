@@ -4,7 +4,6 @@ function PanGestureRecognizer(target, action) {
   var actionLastCalledAt;
 
   this.velocity = 1;
-  this.action = action;
   this.minimumNumberOfTouches = 1;
   this.maximumNumberOfTouches = 10;
   this.minimumNumberOfPixelsTranslatedBeforeRecognized = 5;
@@ -124,7 +123,7 @@ function PanGestureRecognizer(target, action) {
 
   this.callAction = function() {
     actionLastCalledAt = new Date().getTime();
-    this.action(this);
+    action(this);
   };
 
   this.canBegin = function(targetTouchesLength) {
