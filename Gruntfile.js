@@ -45,7 +45,8 @@ module.exports = function (grunt) {
             spyOn: false,
             document: false,
             GestureRecognizer: false,
-            PanGestureRecognizer: false
+            PanGestureRecognizer: false,
+            Timecop: false
           }
         },
         files: {
@@ -76,6 +77,7 @@ module.exports = function (grunt) {
     jasmine: {
       src: sourceFiles,
       options: {
+        vendor: 'vendor/*.js',
         specs: specFiles
       }
     }
