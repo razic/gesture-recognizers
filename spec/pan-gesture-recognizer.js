@@ -83,6 +83,8 @@ describe('PanGestureRecognizer', function() {
       toHaveBeenCalledWith('touchstart', recognizer.touchStart, false);
     expect(target.addEventListener).
       toHaveBeenCalledWith('touchmove', recognizer.touchMove, false);
+    expect(target.addEventListener).
+      toHaveBeenCalledWith('touchend', recognizer.touchEnd, false);
   });
 
   describe('when the minimum number of fingers allowed has moved enough to be \
