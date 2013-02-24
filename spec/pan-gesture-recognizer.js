@@ -4,9 +4,8 @@ describe('PanGestureRecognizer', function() {
   var target; // The element to recognize gestures on
   var action; // The action called when gesture changes state
   var recognizer; // The recognizer object
-  var startTime; // The time the gesture was recognized (Epoch format)
-  var currentTime; // The current time (Epoch format)
-  var intervalTime; // The Interval time between touch events (Epoch format)
+  var startTime; // Time the gestures events began
+  var intervalMilliseconds; // The interval time between `action` calls
   var touchEventA; // Finger(s) touched the screen
   var touchEventB; // The gesture was recognized
   var touchEventC; // The gesture is continuing
@@ -40,11 +39,10 @@ describe('PanGestureRecognizer', function() {
     var touchListF;
     var touchListG;
 
+    startTime = 0; // Thu Jan 01 1970 07:00:00 GMT+0700 (ICT)
+    intervalMilliseconds = 60000; // 1 minute
     target = document.body;
     action = function() {};
-    startTime = 1000000000;
-    currentTime = 1000000000;
-    intervalTime = 2;
     touchA = { clientX: 20, clientY: 10 };
     touchB = { clientX: 14, clientY: 10 };
     touchC = { clientX: 10, clientY: 10 };
@@ -65,11 +63,19 @@ describe('PanGestureRecognizer', function() {
     touchEventF = createTouchEvent('touchend', false, false, touchListF);
     touchEventG = createTouchEvent('touchend', false, false, touchListG);
 
+    Timecop.install();
+    Timecop.freeze(new Date(startTime));
+
     spyOn(target, 'addEventListener').andCallThrough();
 
     recognizer = new PanGestureRecognizer(target, action);
 
     spyOn(recognizer, 'callAction').andCallThrough();
+    spyOn(recognizer, 'calculateVelocity').andCallThrough();
+  });
+
+  afterEach(function() {
+    Timecop.uninstall();
   });
 
   it('should set touch event listeners on the specified target', function() {
@@ -82,7 +88,12 @@ describe('PanGestureRecognizer', function() {
   describe('when the minimum number of fingers allowed has moved enough to be \
   considered a pan', function() {
     beforeEach(function(){
+      var currentTime;
+
+      currentTime = startTime + intervalMilliseconds;
+
       target.dispatchEvent(touchEventA);
+      Timecop.freeze(new Date(currentTime));
       target.dispatchEvent(touchEventB);
     });
 
@@ -102,6 +113,11 @@ describe('PanGestureRecognizer', function() {
     describe('when a finger moves while at least the minimum number of \
     fingers are pressed down', function() {
       beforeEach(function(){
+        var currentTime;
+
+        currentTime = startTime + (intervalMilliseconds * 2);
+
+        Timecop.freeze(new Date(currentTime));
         target.dispatchEvent(touchEventC);
       });
 
@@ -116,7 +132,35 @@ describe('PanGestureRecognizer', function() {
       describe('when a finger moves again while at least the minimum number \
       of fingers are pressed down', function(){
         beforeEach(function() {
+          var currentTime;
+
+          currentTime = startTime + (intervalMilliseconds * 3);
+
+          Timecop.freeze(new Date(currentTime));
           target.dispatchEvent(touchEventD);
+        });
+
+        it('should report velocity', function() {
+          var x1;
+          var y1;
+          var x2;
+          var y2;
+          var distance;
+          var velocity;
+
+          x1 = touchEventC.targetTouches[0].clientX;
+          y1 = touchEventC.targetTouches[0].clientY;
+          x2 = touchEventD.targetTouches[0].clientX;
+          y2 = touchEventD.targetTouches[0].clientY;
+          distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+          velocity = distance / intervalMilliseconds;
+
+          expect(recognizer.calculateVelocity.calls.length).toEqual(1);
+          expect(recognizer.calculateVelocity.calls[0].args[0]).toEqual(x2);
+          expect(recognizer.calculateVelocity.calls[0].args[1]).toEqual(x1);
+          expect(recognizer.calculateVelocity.calls[0].args[2]).toEqual(y2);
+          expect(recognizer.calculateVelocity.calls[0].args[3]).toEqual(y1);
+          expect(recognizer.velocity).toEqual(velocity);
         });
 
         it('should still be in the changed state', function() {
@@ -130,7 +174,16 @@ describe('PanGestureRecognizer', function() {
         describe('when a finger is lifted but the minimum number of fingers \
         are still pressed down', function(){
           beforeEach(function() {
+            var currentTime;
+
+            currentTime = startTime + (intervalMilliseconds * 4);
+
+            Timecop.freeze(new Date(currentTime));
             target.dispatchEvent(touchEventE);
+
+            currentTime += intervalMilliseconds;
+
+            Timecop.freeze(new Date(currentTime));
             target.dispatchEvent(touchEventF);
           });
 

@@ -9,7 +9,7 @@ function PanGestureRecognizer(target, action) {
   this.maximumNumberOfTouches = 10;
   this.minimumNumberOfPixelsTranslatedBeforeRecognized = 5;
 
-  this.touchStart = (function(event) {
+  this.touchStart = function(event) {
     var firstTouch;
 
     firstTouch = event.targetTouches[0];
@@ -18,9 +18,9 @@ function PanGestureRecognizer(target, action) {
     this.startY = firstTouch.clientY;
 
     event.preventDefault();
-  }).bind(this);
+  }.bind(this);
 
-  this.touchMove = (function(event) {
+  this.touchMove = function(event) {
     var firstTouch;
     var translationX;
     var translationY;
@@ -53,10 +53,6 @@ function PanGestureRecognizer(target, action) {
     } else if(this.state == 'began') {
       this.state = 'changed';
 
-      this.calculateVelocity(
-        clientX, previousClientX, clientY, previousClientY
-      );
-
       this.callAction();
     } else if(this.canBegin(targetTouchesLength)) {
       this.state = 'began';
@@ -70,9 +66,9 @@ function PanGestureRecognizer(target, action) {
     }
 
     event.preventDefault();
-  }).bind(this);
+  }.bind(this);
 
-  this.touchEnd = (function(event) {
+  this.touchEnd = function(event) {
     var firstTouch;
     var targetTouchesLength;
 
@@ -88,7 +84,7 @@ function PanGestureRecognizer(target, action) {
     }
 
     event.preventDefault();
-  }).bind(this);
+  }.bind(this);
 
   this.totalPixelsTranslatedGreaterThanMinumum = function(event) {
     return Math.abs(this.translationX) + Math.abs(this.translationY) >=
@@ -99,7 +95,7 @@ function PanGestureRecognizer(target, action) {
     var timeDelta;
 
     if(x1 >= 0 && x2 >= 0 && y1 >= 0  && y2 >= 0) {
-      timeDelta = Date.now() - actionLastCalledAt;
+      timeDelta = new Date().getTime() - (actionLastCalledAt || 0);
 
       this.velocity = this.distance(x2, x1, y2, y1) / timeDelta;
     } else {
@@ -126,16 +122,16 @@ function PanGestureRecognizer(target, action) {
     this.translationY = y;
   };
 
+  this.callAction = function() {
+    actionLastCalledAt = new Date().getTime();
+    this.action(this);
+  };
+
   this.canBegin = function(targetTouchesLength) {
     return this.state == 'possible' &&
       targetTouchesLength >= this.minimumNumberOfTouches &&
         targetTouchesLength <= this.maximumNumberOfTouches &&
           this.totalPixelsTranslatedGreaterThanMinumum();
-  };
-
-  this.callAction = function() {
-    actionLastCalledAt = Date.now();
-    this.action(this);
   };
 
   target.addEventListener('touchstart', this.touchStart, false);
