@@ -9,12 +9,14 @@ module.exports = function (grunt) {
 
   specFiles = [
     'spec/gesture-recognizer.js',
-    'spec/pan-gesture-recognizer.js'
+    'spec/pan-gesture-recognizer.js',
+    'spec/tap-gesture-recognizer.js'
   ];
 
   sourceFiles = [
     'src/gesture-recognizer.js',
-    'src/pan-gesture-recognizer.js'
+    'src/pan-gesture-recognizer.js',
+    'src/tap-gesture-recognizer.js'
   ];
 
   grunt.initConfig({
