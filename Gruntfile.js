@@ -1,11 +1,8 @@
 module.exports = function (grunt) {
   'use strict';
 
-  var buildFile;
   var specFiles;
   var sourceFiles;
-
-  buildFile = 'gesture-recognizers.js';
 
   specFiles = [
     'spec/gesture-recognizer.js',
@@ -25,17 +22,12 @@ module.exports = function (grunt) {
       files: specFiles.concat(sourceFiles),
       tasks: 'default'
     },
-    concat: {
-      dist: {
-        src: sourceFiles,
-        dest: buildFile
-      }
-    },
     jshint: {
       specs: {
         options: {
           multistr: true,
           globals: {
+            document: false,
             console: false,
             it: false,
             expect: false,
@@ -45,7 +37,6 @@ module.exports = function (grunt) {
             beforeEach: false,
             afterEach: false,
             spyOn: false,
-            document: false,
             GestureRecognizer: false,
             PanGestureRecognizer: false,
             Timecop: false
@@ -64,23 +55,24 @@ module.exports = function (grunt) {
         files: {
           src: sourceFiles
         }
-      },
-      build: {
-        options: {
-          globals: {
-            console: false
-          }
-        },
-        files: {
-          src: buildFile
-        }
       }
     },
     jasmine: {
-      src: sourceFiles,
+      src: 'gesture-recognizers.js',
       options: {
         vendor: 'vendor/*.js',
         specs: specFiles
+      }
+    },
+    uglify: {
+      options: {
+        wrap: 'gestureRecognizers',
+        mangle: false
+      },
+      myTarget: {
+        files: {
+          'gesture-recognizers.js': sourceFiles
+        }
       }
     }
   });
@@ -88,15 +80,15 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-jasmine');
 
   grunt.registerTask('default',
     [
       'jshint:specs',
       'jshint:src',
-      'jasmine:src:build',
-      'concat',
-      'jshint:build'
+      'uglify',
+      'jasmine:src:build'
     ]
   );
 }
