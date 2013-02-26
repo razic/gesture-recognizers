@@ -25,8 +25,10 @@ module.exports = function (grunt) {
     jshint: {
       specs: {
         options: {
+          undef: true,
           multistr: true,
           globals: {
+            gestureRecognizers: false,
             document: false,
             console: false,
             it: false,
@@ -48,8 +50,12 @@ module.exports = function (grunt) {
       },
       src: {
         options: {
+          undef: true,
           globals: {
-            console: false
+            exports: false,
+            console: false,
+            GestureRecognizer: false,
+            PanGestureRecognizer: false
           }
         },
         files: {
