@@ -1,6 +1,4 @@
 describe('GestureRecognizer', function() {
-  'use strict';
-
   var recognizer;
 
   beforeEach(function() {

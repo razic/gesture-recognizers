@@ -1,6 +1,4 @@
 function PanGestureRecognizer(target, action) {
-  'use strict';
-
   var actionLastCalledAt;
 
   this.velocity = 1;

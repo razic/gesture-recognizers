@@ -1,6 +1,4 @@
 describe('PanGestureRecognizer', function() {
-  'use strict';
-
   var target; // The element to recognize gestures on
   var action; // The action called when gesture changes state
   var recognizer; // The recognizer object

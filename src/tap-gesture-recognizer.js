@@ -1,6 +1,4 @@
 function TapGestureRecognizer(target, action) {
-  'use strict';
-
   this.touchStart = function() {
     console.log('touchStarted');
   }.bind(this);
