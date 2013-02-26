@@ -16,6 +16,5 @@ GestureRecognizer.initWithTarget = function(target, options) {
 };
 
 GestureRecognizer.prototype.state = 'possible';
-GestureRecognizer.prototype.targets = [];
 
 exports.GestureRecognizer = GestureRecognizer;

@@ -79,7 +79,10 @@ describe('GestureRecognizer', function() {
                 abstractParent.initWithTarget({}, { action: function() {} });
             });
 
-            it('the recognizer will be in the `possible` state', function() {
+            describe('the initialized recognizer object', function() {
+              it('will be in the `possible` state', function() {
+                expect(recognizer.state).toBe('possible');
+              });
             });
           });
         });
