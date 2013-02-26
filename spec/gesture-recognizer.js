@@ -75,8 +75,7 @@ describe('GestureRecognizer', function() {
             var recognizer;
 
             beforeEach(function() {
-              recognizer =
-                abstractParent.initWithTarget({}, { action: function() {} });
+              recognizer = abstractParent.initWithTarget({}, { action: function() {} });
             });
 
             describe('the initialized recognizer object', function() {

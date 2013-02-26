@@ -1,6 +1,8 @@
 function GestureRecognizer() {}
 
 GestureRecognizer.initWithTarget = function(target, options) {
+  var recognizer;
+
   if(arguments.length != 2) {
     throw new Error('You must supply a target and action');
   } else if(!(target instanceof Object)) {
@@ -13,6 +15,9 @@ GestureRecognizer.initWithTarget = function(target, options) {
     throw new Error(options + '\'s `action` property is not a function');
   }
 
+  recognizer = new this();
+
+  return recognizer;
 };
 
 GestureRecognizer.prototype.state = 'possible';
