@@ -1,9 +1,14 @@
-function GestureRecognizer() {}
+function GestureRecognizer(recognizerConstructor) {
+  recognizerConstructor.prototype = GestureRecognizer.prototype;
+  recognizerConstructor.initWithTarget = GestureRecognizer.initWithTarget;
+
+  return recognizerConstructor;
+}
 
 GestureRecognizer.initWithTarget = function(target, options) {
   var recognizer;
 
-  if(arguments.length != 2) {
+  if (arguments.length != 2) {
     throw new Error('You must supply a target and action');
   } else if(!(target instanceof Object)) {
     throw new Error(target + ' is not an Object');

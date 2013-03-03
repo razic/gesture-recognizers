@@ -1,16 +1,23 @@
-describe('GestureRecognizer', function() {
-  var abstractParent;
-
-  abstractParent = gestureRecognizers.GestureRecognizer;
+describe('GestureRecognizer', function () {
+  var
+    GestureRecognizer = gestureRecognizers.GestureRecognizer,
+    myGestureRecognizer = function MyGestureRecognizer() {},
+    MyGestureRecognizer = new GestureRecognizer(myGestureRecognizer);
 
   describe('initialization', function() {
+    it('defines initWithTarget on the new gesture recognizer', function() {
+      expect(typeof MyGestureRecognizer.initWithTarget).toEqual('function');
+    });
+  });
+
+  describe('initWithTarget', function() {
     describe('the number of arguments is not equal to two', function() {
       it('throws an error', function() {
         var errorMessage;
 
         errorMessage = 'You must supply a target and action';
 
-        expect(abstractParent.initWithTarget).toThrow(errorMessage);
+        expect(MyGestureRecognizer.initWithTarget).toThrow(errorMessage);
       });
     });
 
@@ -21,7 +28,7 @@ describe('GestureRecognizer', function() {
         errorMessage = '1 is not an Object';
 
         expect(function() {
-          abstractParent.initWithTarget(1, 2);
+          MyGestureRecognizer.initWithTarget(1, 2);
         }).toThrow(errorMessage);
       });
     });
@@ -35,7 +42,7 @@ describe('GestureRecognizer', function() {
           errorMessage = '2 is not an Object';
 
           expect(function() {
-            abstractParent.initWithTarget({}, 2);
+            MyGestureRecognizer.initWithTarget({}, 2);
           }).toThrow(errorMessage);
         });
       });
@@ -51,7 +58,7 @@ describe('GestureRecognizer', function() {
             errorMessage += ' name `action`';
 
             expect(function() {
-              abstractParent.initWithTarget({}, {});
+              MyGestureRecognizer.initWithTarget({}, {});
             }).toThrow(errorMessage);
           });
         });
@@ -66,7 +73,7 @@ describe('GestureRecognizer', function() {
               errorMessage += ' string';
 
               expect(function() {
-                abstractParent.initWithTarget({}, { action: 1 });
+                MyGestureRecognizer.initWithTarget({}, { action: 1 });
               }).toThrow(errorMessage);
             });
           });
@@ -81,7 +88,7 @@ describe('GestureRecognizer', function() {
               Controller.prototype.action = function() {};
 
               target = new Controller();
-              recognizer = abstractParent.initWithTarget(target, {
+              recognizer = MyGestureRecognizer.initWithTarget(target, {
                 action: 'action'
               });
             });
