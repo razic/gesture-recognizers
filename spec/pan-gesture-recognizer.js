@@ -1,7 +1,9 @@
 describe('PanGestureRecognizer', function() {
+  var view;
   var target; // The element to recognize gestures on
   var action; // The action called when gesture changes state
   var recognizer; // The recognizer object
+  var recognizerClass; // The recognizer class
   var startTime; // Time the gestures events began
   var intervalMilliseconds; // The interval time between `action` calls
   var touchEventA; // Finger(s) touched the screen
@@ -11,6 +13,8 @@ describe('PanGestureRecognizer', function() {
   var touchEventE; // Another finger touched down
   var touchEventF; // A finger was lifted
   var touchEventG; // All fingers are lifted
+
+  recognizerClass = gestureRecognizers.PanGestureRecognizer;
 
   function createTouchEvent(type, canBubble, cancelable, targetTouches) {
     var event;
@@ -22,6 +26,9 @@ describe('PanGestureRecognizer', function() {
 
     return event;
   }
+
+  function Controller() {}
+  Controller.prototype.action = function() {};
 
   beforeEach(function() {
     var touchA;
@@ -37,10 +44,11 @@ describe('PanGestureRecognizer', function() {
     var touchListF;
     var touchListG;
 
+    view = document.body;
     startTime = 0; // Thu Jan 01 1970 07:00:00 GMT+0700 (ICT)
     intervalMilliseconds = 60000; // 1 minute
-    target = document.body;
-    action = function() {};
+    target = new Controller();
+    action = 'action';
     touchA = { clientX: 20, clientY: 10 };
     touchB = { clientX: 14, clientY: 10 };
     touchC = { clientX: 10, clientY: 10 };
@@ -64,9 +72,7 @@ describe('PanGestureRecognizer', function() {
     Timecop.install();
     Timecop.freeze(new Date(startTime));
 
-    spyOn(target, 'addEventListener').andCallThrough();
-
-    recognizer = new PanGestureRecognizer(target, action);
+    recognizer = recognizerClass.initWithTarget(target, { action: action });
 
     spyOn(recognizer, 'callAction').andCallThrough();
     spyOn(recognizer, 'calculateVelocity').andCallThrough();
@@ -76,15 +82,6 @@ describe('PanGestureRecognizer', function() {
     Timecop.uninstall();
   });
 
-  it('should set touch event listeners on the specified target', function() {
-    expect(target.addEventListener).
-      toHaveBeenCalledWith('touchstart', recognizer.touchStart, false);
-    expect(target.addEventListener).
-      toHaveBeenCalledWith('touchmove', recognizer.touchMove, false);
-    expect(target.addEventListener).
-      toHaveBeenCalledWith('touchend', recognizer.touchEnd, false);
-  });
-
   describe('when the minimum number of fingers allowed has moved enough to be \
   considered a pan', function() {
     beforeEach(function(){
@@ -92,9 +89,9 @@ describe('PanGestureRecognizer', function() {
 
       currentTime = startTime + intervalMilliseconds;
 
-      target.dispatchEvent(touchEventA);
+      view.dispatchEvent(touchEventA);
       Timecop.freeze(new Date(currentTime));
-      target.dispatchEvent(touchEventB);
+      view.dispatchEvent(touchEventB);
     });
 
     it('should change to the began state', function() {
@@ -118,7 +115,7 @@ describe('PanGestureRecognizer', function() {
         currentTime = startTime + (intervalMilliseconds * 2);
 
         Timecop.freeze(new Date(currentTime));
-        target.dispatchEvent(touchEventC);
+        view.dispatchEvent(touchEventC);
       });
 
       it('should change to the changed state', function() {
@@ -137,7 +134,7 @@ describe('PanGestureRecognizer', function() {
           currentTime = startTime + (intervalMilliseconds * 3);
 
           Timecop.freeze(new Date(currentTime));
-          target.dispatchEvent(touchEventD);
+          view.dispatchEvent(touchEventD);
         });
 
         it('should report velocity', function() {
@@ -179,12 +176,12 @@ describe('PanGestureRecognizer', function() {
             currentTime = startTime + (intervalMilliseconds * 4);
 
             Timecop.freeze(new Date(currentTime));
-            target.dispatchEvent(touchEventE);
+            view.dispatchEvent(touchEventE);
 
             currentTime += intervalMilliseconds;
 
             Timecop.freeze(new Date(currentTime));
-            target.dispatchEvent(touchEventF);
+            view.dispatchEvent(touchEventF);
           });
 
           it('the current translation coordinates should be calculated from a \
@@ -201,7 +198,7 @@ describe('PanGestureRecognizer', function() {
 
         describe('when all fingers are lifted', function() {
           beforeEach(function() {
-            target.dispatchEvent(touchEventG);
+            view.dispatchEvent(touchEventG);
           });
 
           it('changes to the ended state', function() {
