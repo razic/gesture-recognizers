@@ -2,12 +2,36 @@
 
 > Multitouch gesture recognition for WebKit inspired by iOS
 
-## Gestures
+## Usage
 
-| Gesture | Source File       | iOS Class Reference |
-| ------- | ----------------- | ------------------- |
-| Abstract parent class | [GestureRecognizer](https://github.com/razic/gesture-recognizers/blob/master/src/gesture-recognizer.js) | [UIGestureRecognizer](http://developer.apple.com/library/ios/#documentation/uikit/reference/UIGestureRecognizer_Class/Reference/Reference.html) |
-| Pan | [PanGestureRecognizer](https://github.com/razic/gesture-recognizers/blob/master/src/pan-gesture-recognizer.js) | [UIPanGestureRecognizer](http://developer.apple.com/library/ios/#documentation/uikit/reference/UIPanGestureRecognizer_Class/Reference/Reference.html) |
+Here is the most basic example for recognizing a tap:
+
+```javascript
+var target, handler, recognizer, view;
+
+target = this;
+
+handler = function(recognizer) {
+  // What you want to happen when a tap is recognized
+}
+
+recognizer = gestureRecognizers.TapGestureRecognizer.initWithTarget(target, {
+  action: 'handler'
+});
+
+view = new gestureRecognizers.View(document.getElementById('myElement'));
+
+view.addGestureRecognizer(recognizer);
+```
+
+### Implementing your own Gesture Recognizers
+
+```javascript
+// Returns the original MyRecognizer function expression... with some sugar
+new GestureRecognizer(function MyRecognizer() {
+  // Implementation
+});
+```
 
 ## Contributing
 
