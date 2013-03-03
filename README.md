@@ -2,35 +2,22 @@
 
 > Multitouch gesture recognition for WebKit inspired by iOS
 
+Although this library was largely inspired by Apple's iOS gesture recognizers,
+it remains impractical to implement the API exactly the same. However, most of
+the functionality remains the same.
+
 ## Usage
 
-Here is the most basic example for recognizing a tap:
+In the most basic form, you can recognized a tap gesture like so:
 
 ```javascript
-var target, handler, recognizer, view;
+var recognizer;
 
-target = this;
-
-handler = function(recognizer) {
-  // What you want to happen when a tap is recognized
-}
-
-recognizer = gestureRecognizers.TapGestureRecognizer.initWithTarget(target, {
-  action: 'handler'
+recognizer = gestureRecognizers.Tap(this, function(recognizer){
+  // Implement your gesture handling code here
 });
 
-view = new gestureRecognizers.View(document.getElementById('myElement'));
-
-view.addGestureRecognizer(recognizer);
-```
-
-### Implementing your own Gesture Recognizers
-
-```javascript
-// Returns the original MyRecognizer function expression... with some sugar
-new GestureRecognizer(function MyRecognizer() {
-  // Implementation
-});
+gestureRecognizers.add(document.body, recognizer);
 ```
 
 ## Contributing
