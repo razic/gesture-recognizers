@@ -13,7 +13,7 @@ In the most basic form, you can recognized a tap gesture like so:
 ```javascript
 var recognizer;
 
-recognizer = gestureRecognizers.Tap(this, function(recognizer){
+tapRecognizer = gestureRecognizers.Tap(this, function(recognizer) {
   // Implement your gesture handling code here
 });
 
