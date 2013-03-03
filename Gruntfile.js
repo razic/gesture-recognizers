@@ -4,11 +4,7 @@ module.exports = function (grunt) {
   var specFiles;
   var sourceFiles;
 
-  specFiles = [
-    'spec/gesture-recognizer.js',
-    'spec/pan-gesture-recognizer.js',
-    'spec/tap-gesture-recognizer.js'
-  ];
+  specFiles = "spec/*-spec.js"
 
   sourceFiles = [
     'src/gesture-recognizer.js',
@@ -19,7 +15,7 @@ module.exports = function (grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     watch: {
-      files: specFiles.concat(sourceFiles),
+      files: sourceFiles.concat(specFiles),
       tasks: 'default'
     },
     jshint: {
