@@ -7,9 +7,7 @@ module.exports = function (grunt) {
   specFiles = "spec/*-spec.js"
 
   sourceFiles = [
-    'src/gesture-recognizer.js',
-    'src/pan-gesture-recognizer.js',
-    'src/tap-gesture-recognizer.js'
+    'src/tap.js'
   ];
 
   grunt.initConfig({
