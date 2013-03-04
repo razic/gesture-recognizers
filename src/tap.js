@@ -1,14 +1,22 @@
-function TapGestureRecognizer(target, action) {
-  this.touchStart = function() {
-    console.log('touchStarted');
-  }.bind(this);
+var Tap = function(target, action) {
+  if(!(this instanceof Tap)) return new Tap(target, action);
 
-  this.touchEnd = function() {
-    console.log('touchEnded');
-  }.bind(this);
+  this.target = target;
+  this.action = action;
+};
 
-  target.addEventListener('touchstart', this.touchStart, false);
-  target.addEventListener('touchend', this.touchEnd, false);
-}
+Tap.prototype = {
+  touches: [],
 
-TapGestureRecognizer.prototype = new GestureRecognizer();
+  touchStart: function(event) {
+  },
+
+  touchMove: function(event) {
+  },
+
+  touchEnd: function(event) {
+    this.action(this);
+  }
+};
+
+exports.Tap = Tap;
