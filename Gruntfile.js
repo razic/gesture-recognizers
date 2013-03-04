@@ -7,6 +7,7 @@ module.exports = function (grunt) {
   specFiles = "spec/*-spec.js"
 
   sourceFiles = [
+    'src/add.js',
     'src/tap.js'
   ];
 
