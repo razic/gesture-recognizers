@@ -7,6 +7,7 @@ exports.Tap = function Tap (target, action) {
 
 exports.Tap.prototype = {
   numberOfTaps: 0,
+  numberOfTouches: 0,
   numberOfTouchesRequired: 1,
   numberOfTapsRequired: 1,
   touches: {},
@@ -16,7 +17,11 @@ exports.Tap.prototype = {
 
     this.numberOfTouches = event.targetTouches.length;
 
-    if (this.hasNumberOfTouchesRequired()) this.numberOfTaps += 1;
+    if (this.hasNumberOfTouchesRequired()) {
+      this.numberOfTaps += 1;
+    } else {
+      this.numberOfTaps = 0;
+    }
   },
 
   touchMove: function(event) {

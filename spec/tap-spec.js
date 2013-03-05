@@ -9,43 +9,6 @@ describe('tap gesture', function() {
     gestureRecognizers.add(element, tapRecognizer);
   });
 
-  describe("unmet required number of touches, single tap", function() {
-    var touchStart, touchEnd;
-
-    beforeEach(function() {
-      tapRecognizer.numberOfTouchesRequired = 1;
-      tapRecognizer.numberOfTapsRequired = 1;
-
-      touchStart = document.createEvent('UIEvents');
-      touchEnd = document.createEvent('UIEvents');
-
-      touchStart.targetTouches = {
-        0: { identifier: 1, clientX: 20, clientY: 10 },
-        1: { identifier: 2, clientX: 25, clientY: 10 },
-        length: 2
-      };
-
-      touchEnd.changedTouches = {
-        0: { identifier: 1, clientX: 20, clientY: 10 },
-        1: { identifier: 2, clientX: 25, clientY: 10 },
-        length: 2
-      };
-
-      touchStart.initUIEvent('touchstart', false, false);
-      touchEnd.initUIEvent('touchend', false, false);
-    });
-
-    it("does not recognize the gesture", function() {
-      expect(tapCount).toEqual(0);
-
-      element.dispatchEvent(touchStart);
-      element.dispatchEvent(touchEnd);
-
-      expect(tapCount).toEqual(0);
-      expect(tapRecognizer.numberOfTaps).toEqual(0);
-    });
-  });
-
   describe('single touch, single tap', function() {
     var touchStart, touchEnd;
 
@@ -163,6 +126,43 @@ describe('tap gesture', function() {
       element.dispatchEvent(touchEnd);
 
       expect(tapCount).toEqual(1);
+      expect(tapRecognizer.numberOfTaps).toEqual(0);
+    });
+  });
+
+  describe("unmet required number of touches, single tap", function() {
+    var touchStart, touchEnd;
+
+    beforeEach(function() {
+      tapRecognizer.numberOfTouchesRequired = 1;
+      tapRecognizer.numberOfTapsRequired = 1;
+
+      touchStart = document.createEvent('UIEvents');
+      touchEnd = document.createEvent('UIEvents');
+
+      touchStart.targetTouches = {
+        0: { identifier: 1, clientX: 20, clientY: 10 },
+        1: { identifier: 2, clientX: 25, clientY: 10 },
+        length: 2
+      };
+
+      touchEnd.changedTouches = {
+        0: { identifier: 1, clientX: 20, clientY: 10 },
+        1: { identifier: 2, clientX: 25, clientY: 10 },
+        length: 2
+      };
+
+      touchStart.initUIEvent('touchstart', false, false);
+      touchEnd.initUIEvent('touchend', false, false);
+    });
+
+    it("does not recognize the gesture", function() {
+      expect(tapCount).toEqual(0);
+
+      element.dispatchEvent(touchStart);
+      element.dispatchEvent(touchEnd);
+
+      expect(tapCount).toEqual(0);
       expect(tapRecognizer.numberOfTaps).toEqual(0);
     });
   });
