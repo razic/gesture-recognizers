@@ -1,15 +1,21 @@
-exports.Tap = function(target, action) {
+exports.Tap = function Tap (target, action) {
   if(!(this instanceof Tap)) return new Tap(target, action);
 
   this.target = target;
   this.action = action;
 };
 
-Tap.prototype = {
-  touches: [],
+exports.Tap.prototype = {
+  tapCount: 0,
+  numberOfTapsRequired: 1,
+  touches: {},
 
   touchStart: function(event) {
     event.preventDefault();
+
+    var touches;
+
+    touches = event.targetTouches;
   },
 
   touchMove: function(event) {
@@ -18,6 +24,12 @@ Tap.prototype = {
 
   touchEnd: function(event) {
     event.preventDefault();
-    this.action(this);
+
+    this.tapCount += 1;
+
+    if (this.tapCount == this.numberOfTapsRequired) {
+      this.action(this);
+      this.tapCount = 0;
+    }
   }
 };
