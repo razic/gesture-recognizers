@@ -22,6 +22,7 @@ a specified number of times.
 #### Configuring the gesture
 
 `numberOfTapsRequired` *property*
+
 `numberOfTouchesRequired` *property*
 
 #### Properties
