@@ -6,16 +6,20 @@ exports.Tap = function Tap (target, action) {
 };
 
 exports.Tap.prototype = {
-  tapCount: 0,
+  numberOfTaps: 0,
+  numberOfTouchesRequired: 1,
   numberOfTapsRequired: 1,
   touches: {},
 
   touchStart: function(event) {
     event.preventDefault();
 
-    var touches;
+    var targetTouches;
 
-    touches = event.targetTouches;
+    targetTouches = event.targetTouches;
+
+    if (this.hasNumberOfTouchesRequired(targetTouches.length))
+      this.numberOfTaps += 1;
   },
 
   touchMove: function(event) {
@@ -25,11 +29,17 @@ exports.Tap.prototype = {
   touchEnd: function(event) {
     event.preventDefault();
 
-    this.tapCount += 1;
-
-    if (this.tapCount == this.numberOfTapsRequired) {
+    if (this.hasNumberOfTapsRequired()) {
       this.action(this);
-      this.tapCount = 0;
+      this.numberOfTaps = 0;
     }
+  },
+
+  hasNumberOfTouchesRequired: function(length) {
+    return length == this.numberOfTouchesRequired;
+  },
+
+  hasNumberOfTapsRequired: function() {
+    return this.numberOfTaps == this.numberOfTapsRequired;
   }
 };
