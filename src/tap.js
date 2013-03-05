@@ -14,12 +14,9 @@ exports.Tap.prototype = {
   touchStart: function(event) {
     event.preventDefault();
 
-    var targetTouches;
+    this.numberOfTouches = event.targetTouches.length;
 
-    targetTouches = event.targetTouches;
-
-    if (this.hasNumberOfTouchesRequired(targetTouches.length))
-      this.numberOfTaps += 1;
+    if (this.hasNumberOfTouchesRequired()) this.numberOfTaps += 1;
   },
 
   touchMove: function(event) {
@@ -36,7 +33,7 @@ exports.Tap.prototype = {
   },
 
   hasNumberOfTouchesRequired: function(length) {
-    return length == this.numberOfTouchesRequired;
+    return this.numberOfTouches == this.numberOfTouchesRequired;
   },
 
   hasNumberOfTapsRequired: function() {
