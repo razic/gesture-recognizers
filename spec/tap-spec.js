@@ -10,8 +10,9 @@ describe('recognizing taps', function() {
   });
 
   describe('single finger, single tap', function() {
+    var touchStart, touchEnd;
+
     beforeEach(function() {
-      var touchStart, touchEnd;
 
       touchStart = document.createEvent('UIEvents');
       touchEnd = document.createEvent('UIEvents');
@@ -28,11 +29,14 @@ describe('recognizing taps', function() {
 
       touchStart.initUIEvent('touchstart', false, false);
       touchEnd.initUIEvent('touchend', false, false);
-      element.dispatchEvent(touchStart);
-      element.dispatchEvent(touchEnd);
     });
 
     it('recognizes the gesture', function() {
+      expect(tapCount).toEqual(0);
+
+      element.dispatchEvent(touchStart);
+      element.dispatchEvent(touchEnd);
+
       expect(tapCount).toEqual(1);
       expect(tapRecognizer.tapCount).toEqual(0);
     });
@@ -42,7 +46,6 @@ describe('recognizing taps', function() {
     var touchStartA, touchEndA, touchStartB, touchEndB;
 
     beforeEach(function() {
-
       tapRecognizer.numberOfTapsRequired = 2;
 
       touchStartA = document.createEvent('UIEvents');
@@ -77,6 +80,8 @@ describe('recognizing taps', function() {
     });
 
     it('recognizes the gesture', function() {
+      expect(tapCount).toEqual(0);
+
       element.dispatchEvent(touchStartA);
       element.dispatchEvent(touchEndA);
 
