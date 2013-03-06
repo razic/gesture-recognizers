@@ -10,9 +10,9 @@ DOM element a specified number of times.
 
 ### Configuring the gesture
 
-[`numberOfTapsRequired`](#numberOfTapsRequired) *property*
+[`numberOfTapsRequired`](#numberoftapsrequired) *property*
 
-[`numberOfTouchesRequired`](#numberOfTouchesRequired) *property*
+[`numberOfTouchesRequired`](#numberoftouchesrequired) *property*
 
 ## Properties
 
