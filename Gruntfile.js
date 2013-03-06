@@ -1,39 +1,30 @@
 module.exports = function (grunt) {
   'use strict';
 
-  var buildFile;
   var specFiles;
   var sourceFiles;
 
-  buildFile = 'gesture-recognizers.js';
-
-  specFiles = [
-    'spec/gesture-recognizer.js',
-    'spec/pan-gesture-recognizer.js'
-  ];
+  specFiles = "spec/*-spec.js"
 
   sourceFiles = [
-    'src/gesture-recognizer.js',
-    'src/pan-gesture-recognizer.js'
+    'src/add.js',
+    'src/tap.js'
   ];
 
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     watch: {
-      files: specFiles.concat(sourceFiles),
+      files: sourceFiles.concat(specFiles),
       tasks: 'default'
-    },
-    concat: {
-      dist: {
-        src: sourceFiles,
-        dest: buildFile
-      }
     },
     jshint: {
       specs: {
         options: {
+          undef: true,
           multistr: true,
           globals: {
+            gestureRecognizers: false,
+            document: false,
             console: false,
             it: false,
             expect: false,
@@ -43,7 +34,6 @@ module.exports = function (grunt) {
             beforeEach: false,
             afterEach: false,
             spyOn: false,
-            document: false,
             GestureRecognizer: false,
             PanGestureRecognizer: false,
             Timecop: false
@@ -55,46 +45,50 @@ module.exports = function (grunt) {
       },
       src: {
         options: {
+          undef: true,
           globals: {
-            console: false
+            exports: false,
+            console: false,
+            GestureRecognizer: false,
+            PanGestureRecognizer: false
           }
         },
         files: {
           src: sourceFiles
         }
-      },
-      build: {
-        options: {
-          globals: {
-            console: false
-          }
-        },
-        files: {
-          src: buildFile
-        }
       }
     },
     jasmine: {
-      src: sourceFiles,
+      src: 'gesture-recognizers.js',
       options: {
         vendor: 'vendor/*.js',
         specs: specFiles
+      }
+    },
+    uglify: {
+      options: {
+        wrap: 'gestureRecognizers',
+        mangle: false
+      },
+      myTarget: {
+        files: {
+          'gesture-recognizers.js': sourceFiles
+        }
       }
     }
   });
 
   grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-jasmine');
 
   grunt.registerTask('default',
     [
       'jshint:specs',
       'jshint:src',
-      'jasmine:src:build',
-      'concat',
-      'jshint:build'
+      'uglify',
+      'jasmine:src:build'
     ]
   );
 }
