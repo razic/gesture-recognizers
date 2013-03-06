@@ -1,6 +1,4 @@
 function PanGestureRecognizer(target, action) {
-  'use strict';
-
   var actionLastCalledAt;
 
   this.velocity = 1;
@@ -133,9 +131,11 @@ function PanGestureRecognizer(target, action) {
           this.totalPixelsTranslatedGreaterThanMinumum();
   };
 
-  target.addEventListener('touchstart', this.touchStart, false);
-  target.addEventListener('touchmove', this.touchMove, false);
-  target.addEventListener('touchend', this.touchEnd, false);
+  //target.addEventListener('touchstart', this.touchStart, false);
+  //target.addEventListener('touchmove', this.touchMove, false);
+  //target.addEventListener('touchend', this.touchEnd, false);
 }
 
 PanGestureRecognizer.prototype = new GestureRecognizer();
+PanGestureRecognizer.initWithTarget = GestureRecognizer.initWithTarget;
+exports.PanGestureRecognizer = PanGestureRecognizer;
