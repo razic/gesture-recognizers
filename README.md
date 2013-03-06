@@ -8,7 +8,8 @@ You can use this library to create your own custom gestures or use one of the
 following that are provided:
 
 | Gesture | Class |
-| Tapping | [gestureRecognizers.Tap](readmes/tap.md) |
+|:------- |:----- |
+| Tapping | [`gestureRecognizers.Tap`](readmes/tap.md) |
 
 ## Contributing
 
