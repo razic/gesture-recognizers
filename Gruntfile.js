@@ -7,8 +7,10 @@ module.exports = function (grunt) {
   specFiles = "spec/*-spec.js"
 
   sourceFiles = [
+    'src/states.js',
     'src/add.js',
-    'src/tap.js'
+    'src/tap.js',
+    'src/pan.js'
   ];
 
   grunt.initConfig({
@@ -21,8 +23,10 @@ module.exports = function (grunt) {
       specs: {
         options: {
           undef: true,
+          debug: true,
           multistr: true,
           globals: {
+            jasmine: false,
             gestureRecognizers: false,
             document: false,
             console: false,
@@ -46,6 +50,7 @@ module.exports = function (grunt) {
       src: {
         options: {
           undef: true,
+          debug: true,
           globals: {
             exports: false,
             console: false,
@@ -68,7 +73,10 @@ module.exports = function (grunt) {
     uglify: {
       options: {
         wrap: 'gestureRecognizers',
-        mangle: false
+        mangle: false,
+        compress: {
+          //drop_debugger: false
+        }
       },
       myTarget: {
         files: {
