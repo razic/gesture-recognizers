@@ -54,6 +54,20 @@ exports.Pan.prototype = {
   },
 
   touchEnd: function(event) {
+    var oldestTouch, targetTouches;
+
+    event.preventDefault();
+
+    targetTouches = event.targetTouches;
+    oldestTouch = targetTouches[0];
+
+    if (targetTouches.length < this.minimumNumberOfTouches) {
+      this.state = exports.states.ended;
+      this.action(this);
+    } else {
+      this.startX = oldestTouch.clientX - this.translationX;
+      this.startY = oldestTouch.clientY - this.translationY;
+    }
   },
 
   canBegin: function(targetTouchesLength) {
