@@ -1,7 +1,6 @@
 describe('pan gesture', function() {
   var element, // The element the gesture recognizer is receiving touches from
     panRecognizer, // The gesture recognizer object
-    actionCalls, // Someone figure out why I can't use a damn Jasmine spy...
     recognized, // A flag that will be set true when the gesture is recognized
     currentTime, // The current time
     startTime, // Time the touch events began
@@ -14,7 +13,6 @@ describe('pan gesture', function() {
     touchEndA, // A finger was lifted
     touchEndB; // All fingers are lifted
 
-  actionCalls = 0;
   recognized = false;
   startTime = 0; // Thu Jan 01 1970 07:00:00 GMT+0700 (ICT)
   currentTime = 0; // Thu Jan 01 1970 07:00:00 GMT+0700 (ICT)
@@ -71,9 +69,8 @@ describe('pan gesture', function() {
     length: 1
   };
 
-  panRecognizer = gestureRecognizers.Pan(this, function() {
-    actionCalls += 1;
-  });
+  panRecognizer = gestureRecognizers.Pan(this);
+  panRecognizer.action = jasmine.createSpy('action');
 
   Timecop.install();
   Timecop.freeze(new Date(startTime));
@@ -86,6 +83,7 @@ describe('pan gesture', function() {
   touchEndA.initUIEvent('touchend');
   touchEndB.initUIEvent('touchend');
 
+
   describe('the minimum number of fingers required has moved enough to be \
   considered a pan', function () {
     element.dispatchEvent(touchStartA);
@@ -94,7 +92,7 @@ describe('pan gesture', function() {
   
     it('begins recognizing the gesture', function () {
       expect(panRecognizer.state).toBe(gestureRecognizers.states.began);
-      expect(actionCalls).toEqual(1);
+      expect(panRecognizer.action.calls.length).toEqual(1);
       expect(panRecognizer.translationX).toEqual(0);
       expect(panRecognizer.translationY).toEqual(0);
     });
