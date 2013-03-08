@@ -89,10 +89,16 @@ describe('pan gesture', function() {
     element.dispatchEvent(touchStartA);
     Timecop.freeze(new Date(currentTime += intervalMilliseconds));
     element.dispatchEvent(touchMoveA);
-  
-    it('begins recognizing the gesture', function () {
+
+    it("enters the began state", function() {
       expect(panRecognizer.state).toBe(gestureRecognizers.states.began);
+    });
+
+    it('calls the action', function() {
       expect(panRecognizer.action.calls.length).toEqual(1);
+    });
+
+    it('starts translation coordinates at XY(0,0)', function() {
       expect(panRecognizer.translationX).toEqual(0);
       expect(panRecognizer.translationY).toEqual(0);
     });
