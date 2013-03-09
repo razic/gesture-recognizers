@@ -10,6 +10,7 @@ following that are provided:
 | Gesture | Class |
 |:------- |:----- |
 | Tapping | [`gestureRecognizers.Tap`](readmes/tap.md) |
+| Panning | [`gestureRecognizers.Pan`](readmes/pan.md) |
 
 ## Contributing
 
