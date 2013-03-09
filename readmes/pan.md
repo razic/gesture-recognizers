@@ -11,18 +11,18 @@ A panning gesture is continuous. It begins (`gestureRecognizers.states.began`)
 when the minimum number of fingers allowed
 ([`minimumNumberOfTouches`](#minimumNumberOfTouches)) has moved enough to be
 considered a pan
-([`minimumNumberOfPixelsTranslatedBeforeRecognized`](#minimumNumberOfPixelsTrans
-latedBeforeRecognized)). It changes (`gestureRecognizers.states.changed`) when a
-finger moves while at least the minimum number of fingers are pressed down. It
-ends (`gestureRecognizers.states.ended`) when all fingers are lifted.
+([`minimumNumberOfPixelsTranslatedBeforeRecognized`](#minimumNumberOfPixelsTranslatedBeforeRecognized)).
+It changes (`gestureRecognizers.states.changed`) when a finger moves while at
+least the minimum number of fingers are pressed down. It ends
+(`gestureRecognizers.states.ended`) when all fingers are lifted.
 
 Clients of this class can, in their action method callbacks, query the
 `gestureRecognizers.Pan` instance for the current translation of the gesture
 with the [`translationX`](#translationx) and [`translationY`](#translationy)
-instance methods. You may also query the velocity of the translation with the
-[`velocityX`](#velocityx) and [`velocityY`](#velocityy) instance methods.
+properties. You may also query the velocity of the translation with the
+[`velocityX`](#velocityx) and [`velocityY`](#velocityy) properties.
 Clients may also reset the translation to a desired value with the
-[`setTranslation`](#settranslation) instance method.
+[`setTranslation`](#settranslationx-y) instance method.
 
 ## Tasks
 
@@ -32,8 +32,8 @@ Clients may also reset the translation to a desired value with the
 
 [`maximumNumberOfTouches`](#maximumnumberoftouches) *property*
 
-[`minimumNumberOfPixelsTranslatedBeforeRecognized`](#minimumnumberofpixelstransl
-atedbeforerecognized) *property*
+[`minimumNumberOfPixelsTranslatedBeforeRecognized`](#minimumnumberofpixelstranslatedbeforerecognized)
+*property*
 
 ### Tracking the location and velocity of the gesture
 
@@ -47,7 +47,7 @@ atedbeforerecognized) *property*
 
 [`velocityY`](#velocityy) *property*
 
-[`setTranslation`](#settranslation) *instance method*
+[`setTranslation`](#settranslationx-y) *instance method*
 
 ## Properties
 
