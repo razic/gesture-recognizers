@@ -1,6 +1,7 @@
 describe('pan gesture', function() {
   var element, // The element the gesture recognizer is receiving touches from
     panRecognizer, // The gesture recognizer object
+    ended, // A flag to check whether the gesture ended
     currentTime, // The current time
     startTime, // Time the touch events began
     intervalMilliseconds, // The interval time between `action` calls
@@ -79,7 +80,12 @@ describe('pan gesture', function() {
       currentTime = 0; // Thu Jan 01 1970 07:00:00 GMT+0700 (ICT)
       element = document.createElement();
       panRecognizer = gestureRecognizers.Pan(this);
-      panRecognizer.action = jasmine.createSpy('action');
+      panRecognizer.action = jasmine.createSpy('action').andCallFake(
+        function(recognizer) {
+          if (recognizer.state == gestureRecognizers.states.ended)
+            ended = true;
+        }
+      );
 
       gestureRecognizers.add(element, panRecognizer);
       Timecop.install();
@@ -144,6 +150,11 @@ describe('pan gesture', function() {
           expect(panRecognizer.state).toBe(gestureRecognizers.states.changed);
         });
 
+        it("calculates the velocity", function() {
+          expect(panRecognizer.velocityX).toBe(5 / intervalMilliseconds);
+          expect(panRecognizer.velocityY).toBe(10 / intervalMilliseconds);
+        });
+
         it('calls the action', function() {
           expect(panRecognizer.action.calls.length).toEqual(1);
         });
@@ -158,12 +169,13 @@ describe('pan gesture', function() {
             element.dispatchEvent(touchEndA);
           });
 
-          it('current translation coordinates are calculated from a new \
-          starting point equal to the current coordinates of the oldest touch \
-          minus the current translation', function() {
-            // This prevents the translation values from being calculated
-            // from the original startX and startY which was recorded the first
-            // time a finger touched down
+          it('sets the translation coordinates', function() {
+            // Current translation coordinates are calculated from a new
+            // starting point equal to the current coordinates of the oldest
+            // touch minus the current translation. This prevents the
+            // translation values from being calculated from the original startX
+            // and startY which was recorded the first time a finger touched
+            // down.
 
             expect(panRecognizer.startX).toEqual(29);
             expect(panRecognizer.startY).toEqual(25);
@@ -180,17 +192,32 @@ describe('pan gesture', function() {
           describe('the minimum number of fingers are no longer pressed down',
           function() {
             beforeEach(function() {
+              ended = false;
               panRecognizer.action.reset();
               Timecop.freeze(new Date(currentTime += intervalMilliseconds));
               element.dispatchEvent(touchEndB);
             });
 
             it('enters the ended state', function() {
-              expect(panRecognizer.state).toBe(gestureRecognizers.states.ended);
+              expect(ended).toBe(true);
             });
 
             it('calls the action', function() {
               expect(panRecognizer.action.calls.length).toEqual(1);
+            });
+
+            it('resets so the gesture may be recognized again', function() {
+              var possibleState;
+
+              possibleState = gestureRecognizers.states.possible;
+
+              expect(panRecognizer.startX).toBe(0);
+              expect(panRecognizer.startY).toBe(0);
+              expect(panRecognizer.velocityX).toBe(1);
+              expect(panRecognizer.velocityY).toBe(1);
+              expect(panRecognizer.translationX).toBe(0);
+              expect(panRecognizer.translationY).toBe(0);
+              expect(panRecognizer.state).toBe(possibleState);
             });
           });
         });
