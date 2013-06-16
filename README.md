@@ -1,3 +1,8 @@
+# Warning
+
+I will soon be deleting this repository in favor of a `component` style set of
+repositories here: https://github.com/multi-touch
+
 # gesture-recognizers
 
 > Multitouch gesture recognition for the Web inspired by iOS
